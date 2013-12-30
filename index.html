@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <style type="text/css">
+        @import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,300,400);
+        /* @import url(http://fonts.googleapis.com/css?family=Roboto:300,300italic); */
+
+        body {
+            font-family: "Open Sans", sans-serif;
+            font-size: .14in;
+            margin: 0;
+            padding: 0;
+            background: #fff;
+            font-weight: 400;
+            color: #000;
+        }
+
+        div.shell { margin: auto; width: 10in; }
+        div.main { width: 3.6in; margin-bottom: 1.5in; margin-left: 6.5in; }
+
+        div.left { 
+            float: left; width: 6.0in; 
+            margin-right: .5in; 
+            margin-left: -6.2in;
+        }
+
+        h1, h2 {
+            font-family: "Open Sans", sans-serif;
+            font-weight: 400;
+            margin: 0;
+            position: relative;
+            left: -.15in;
+            padding-top: 0.1in;
+            padding-bottom: 0;
+            padding-left: 0;
+            /* border: 1px solid #ccc; */
+        }
+
+        h1 { font-size: .3in; color: #555; margin-top: 0.1in; margin-bottom: 0.2in; }
+        h2 { font-size: .17in; color: #111; }
+
+        a { color: #009; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        p { 
+            margin-top: 0.1in;
+            margin-bottom: 0.1in;
+            line-height: .2in;
+        }
+        p.intro-text {
+            width: 97%;
+        }
+
+        ul.contact {
+            padding-top: .2in;
+            list-style: none;
+            padding-left: 0;
+            padding-bottom: .1in;
+        }
+        ul.contact li {
+            margin: 0;
+        }
+
+        ul.contact li.photo {
+            padding-bottom: .05in;
+        }
+
+        img.photo {
+            width: 200px;
+            height: 200px;
+            border: 1px solid #999;
+        }
+
+        ul.contact span.field {
+            display: inline-block;
+            width: .6in;
+            color: #666;
+        }
+
+        ul.contact a.email {
+            /* font-family: "Consolas", "Droid Sans Mono", "Courier New", monospace; */
+        }
+
+        ul.publications {
+            list-style: none;
+
+            padding-top: 0;
+            padding-right: .2in;
+            padding-left: 0;
+            padding-bottom: 0;
+        }
+        ul.publications span.title a { color: #131; }
+        ul.publications li {
+            padding-bottom: .16in;
+            /* line-height: .2in; */
+        }
+        ul.publications a.me {
+            color: #500;
+        }
+        ul.publications span.proceeding {
+            font-style: italic;
+        }
+
+        ul.exp,
+        ul.education,
+        ul.awards {
+            padding: 0;
+            list-style: none;
+        }
+        ul.exp li,
+        ul.education li,
+        ul.awards li {
+            padding-left: .1in;
+            padding-bottom: .05in;
+            /* padding-left: 1.2in; */
+        }
+
+        span.tm {
+            margin-right: .1in;
+            color: #444;
+            display: block;
+            margin-bottom: .04in;
+            /*
+            float: left;
+            margin-left: -1.2in;
+            width: 1.2in;
+            */
+        }
+
+        div.footer {
+            color: #333;
+            line-height: .3in;
+            text-align: center;
+            margin-top: 1.3in;
+            margin-right: 2in;
+            margin-bottom: .7in;
+            border: 1px dashed #444;
+            padding-top: .3in;
+            padding-bottom: .3in;
+        }
+    </style>
+
+    <title>He "Lonnie" Liu - CSE, UC San Diego</title>
+</head>
+
+<body><div class="shell"><div class="main">
+
+    <div class="left">
+        <h1>He "Lonnie" Liu</h1>
+
+        <div class="intro">
+            <p>Ph.D student (since 2009) and candidate (since 2013)</p>
+
+            <p>
+            Advised by 
+            <a href="http://cseweb.ucsd.edu/~voelker/">Geoffrey M. Voelker</a>
+                and 
+            <a href="http://cseweb.ucsd.edu/~savage/">Stefan Savage</a>.
+            </p>
+
+            <p>
+            <a href="http://cseweb.ucsd.edu/groups/sysnet">System and Network Group</a><br/>
+            <a href="http://www-cse.ucsd.edu">Department of Computer Science and Engineering</a><br/>
+            <a href="http://www.ucsd.edu">University of California, San Diego</a>
+            </p>
+
+            <p class="intro-text">I do a little bit of everything: data center networks, network
+            file systems, mobile phones, trusted computing, Internet measurement, Web security, 
+            software defined radios... 
+            Recently, I have been building a hybrid optical-electrical switch for datacenters.</p>
+        </div>
+    </div>
+
+    <ul class="contact">
+        <li class="photo"><img src="./photo.jpeg" class="photo" alt="photo"/></li>
+        <li><span class="field">Email</span> <a href="mailto:h8liu@ucsd.edu" class="email">h8liu@(cs.)ucsd.edu</a></li>
+        <li><span class="field">Office</span> CSE 3140</li>
+    </ul>
+
+
+    <div class="left">
+    <h2>Publications</h2>
+
+    <ul class="publications">
+        <li>
+            <span class="title"><a href="http://research.microsoft.com/en-us/um/people/ssaroiu/publications/mobisys/2012/tenor.pdf">Software Abstractions for Trusted
+            Sensors</a></span>,
+
+            <span class="authors">
+            <a href="http://www.cs.ucsd.edu/~h8liu/" class="me">He Liu</a>,
+            <a href="http://research.microsoft.com/en-us/um/people/ssaroiu/">Stefan Saroiu</a>,
+            <a href="http://research.microsoft.com/en-us/people/alecw/">Alec Wolman</a>,
+            <a href="http://research.microsoft.com/en-us/people/rhim/">Himanshu
+            Raj</a>,
+
+            <a href="http://www.sigmobile.org/mobisys/2012/index.php">
+            <span class="proceeding">
+            The Tenth International Conference on
+            Mobile Systems, Applications and Services (MobiSys)</span>,
+            <span class="meta">Low Wood Bay, Lake District, United Kingdom, June, 2012</span></a>
+        </li>
+        <li>
+            <span class="title"><a href="http://cseweb.ucsd.edu/~hovav/dist/verilogo.pdf">
+            Verilogo: Proactive Phishing Detection via Logo Recognition</a></span>,
+
+            <span class="authors">
+            Ge Wang,
+            <a href="http://www.cs.ucsd.edu/~h8liu/" class="me">He Liu</a>,
+            Sebastian Becerra,
+            <a href="http://vision.ucsd.edu/~kai/">Kai Wang</a>,
+            <a href="http://cseweb.ucsd.edu/~sjb/">Serge Belongie</a>,
+            <a href="http://cseweb.ucsd.edu/~hovav/">Hovav Shacham</a>, and
+            <a href="http://www.cs.ucsd.edu/~savage/">Stefan Savage</a></span>,
+
+            <span class="proceeding">UCSD Technical Report CS2011-0969</span>,
+            <span class="meta">August, 2011</span>
+        </li>
+
+        <li>
+            <span class="title"><a href="http://cseweb.ucsd.edu/~savage/papers/Oakland11.pdf">
+            Click Trajectories: End-to-End Analysis of the Spam Value Chain</a></span>,
+
+            <span class="authors">
+            <a href="http://www.cs.ucsd.edu/~klevchen/">Kirill Levchenko</a>, 
+            <a href="http://cseweb.ucsd.edu/~apitsill/">Andreas Pitsillidis</a>, 
+            <a href="http://www.cs.ucsd.edu/~nchachra/">Neha Chachra</a>, 
+            <a href="http://noh.ucsd.edu/~bmenrigh/">Brandon Enright</a>, 
+            Mark Felegyhazi, 
+            Chris Grier, 
+            <a href="http://cseweb.ucsd.edu/~trhalvorson/">Tristan Halvorson</a>, 
+            <a href="http://www.cs.ucsd.edu/~ckanich/">Chris Kanich</a>, 
+            Christian Kreibich, 
+            <a href="http://www.cs.ucsd.edu/~h8liu/" class="me">He Liu</a>, 
+            <a href="http://www.cs.ucsd.edu/~dlmccoy/">Damon McCoy</a>, 
+            Nicholas Weaver, 
+            Vern Paxson, 
+            <a href="http://www.cs.ucsd.edu/~voelker/">Geoffrey M. Voelker</a>, and 
+            <a href="http://www.cs.ucsd.edu/~savage/">Stefan Savage</a></span>,
+
+            <a href="http://www.ieee-security.org/TC/SP2011/">
+            <span class="proceeding">Proceedings of the IEEE Symposium and Security and Privacy</span>,
+            <span class="meta">Oakland, CA, May 2011</span>
+            </a>
+        </li>
+        
+        <li>
+            <span class="title"><a href="http://www.cs.ucsd.edu/~savage/papers/LEET11.pdf">
+            On the Effects of Registrar-level Intervention</a></span>,
+
+            <span class="authors">
+            <a href="http://www.cs.ucsd.edu/~h8liu/" class="me">He Liu</a>, 
+            <a href="http://www.cs.ucsd.edu/~klevchen/">Kirill Levchenko</a>, 
+            Mark Felegyhazi, 
+            Christian Kreibich, 
+            Gregor Maier, 
+            <a href="http://www.cs.ucsd.edu/~voelker/">Geoffrey M. Voelker</a>, and 
+            <a href="http://www.cs.ucsd.edu/~savage/">Stefan Savage</a></span>,
+
+            <a href="http://www.usenix.org/event/leet11/">
+            <span class="proceeding">Proceedings of the USENIX Workshop on 
+            Large-scale Exploits and Emergent Threats (LEET)</span>, 
+            <span class="meta">Boston, MA, March 2011</span>
+            </a>
+        </li>
+
+        <li>
+            <span class="title"><a href="http://research.microsoft.com/apps/pubs/default.aspx?id=145448">
+            Sora: high-performance software radio using general-purpose multi-core processors</a></span>,
+
+            <span class="authors">
+            <a href="http://research.microsoft.com/en-us/people/kuntan/">Kun Tan</a>,
+            <a href="http://www.cs.ucsd.edu/~h8liu/" class="me">He Liu</a>,
+            <a href="http://research.microsoft.com/en-us/people/jiazhang/">Jiansong Zhang</a>,
+            <a href="http://research.microsoft.com/en-us/people/ygz/">Yongguang Zhang</a>,
+            Ji Fang, and 
+            <a href="http://www.cs.ucsd.edu/~voelker/">Geoffrey M. Voelker</a></span>,
+
+            <span class="proceeding">Communications of the ACM</span>, 
+            <span class="meta">January 2011</span>
+        </li>
+
+        <li>
+            <span class="title"><a href="http://research.microsoft.com/apps/pubs/default.aspx?id=101535">
+            SAM: Enabling Practical Spatial Multiple Access in Wireless LAN</a></span>,
+            <span class="authors">
+            <a href="http://research.microsoft.com/en-us/people/kuntan/">Kun Tan</a>,
+            <a href="http://www.cs.ucsd.edu/~h8liu/" class="me">He Liu</a>,
+            Ji Fang,
+            Wei Wang,
+            <a href="http://research.microsoft.com/en-us/people/jiazhang/">Jiansong Zhang</a>,
+            Mi Chen, and 
+            <a href="http://www.cs.ucsd.edu/~voelker/">Geoffrey M. Voelker</a></span>,
+
+            <a href="http://www.sigmobile.org/mobicom/2009/">
+            <span class="proceeding">
+            The 15th Annual International Conference on 
+            Mobile Computing and Networking (Mobicom)</span>,
+            <span class="meta">Beijing, China, September 2009</span>
+            </a>
+        </li>
+
+        <li>
+            <span class="title"><a href="http://research.microsoft.com/apps/pubs/default.aspx?id=79927">
+            Sora: High Performance Software Radio Using General Purpose Multi-core Processors</a></span>,
+
+            <span class="authors">
+            <a href="http://research.microsoft.com/en-us/people/kuntan/">Kun Tan</a>,
+            <a href="http://research.microsoft.com/en-us/people/jiazhang/">Jiansong Zhang</a>,
+            Ji Fang, 
+            <a href="http://www.cs.ucsd.edu/~h8liu/" class="me">He Liu</a>, 
+            Yusheng Ye, 
+            Shen Wang, 
+            <a href="http://research.microsoft.com/en-us/people/ygz/">Yongguang Zhang</a>,
+            Haitao Wu, 
+            Wei Wang, and 
+            <a href="http://www.cs.ucsd.edu/~voelker/">Geoffrey M. Voelker</a></span>,
+
+            <a href="http://www.usenix.org/events/nsdi09/nsdi09.html">
+            <span class="proceeding">
+            Proceedings of the 6th USENIX Symposium on Networked
+            Systems Design and Implementation (NSDI)</span>,
+            <span class="meta">Boston, MA, April 2009</span>
+            </a>
+        </li>
+
+    </ul>
+    </div>
+
+    <h2>Experience</h2>
+
+    <ul class="exp">
+        <li><span class="tm">Summer 2010</span> Intern, Microsoft Research Redmond. <br /> 
+            Worked on Trusted Sensor</li>
+        <li><span class="tm">2008 - 2009</span> Intern, Microsoft Research Asia. <br />
+            Worked on Sora</li>
+    </ul>
+
+    <h2>Education</h2>
+
+    <ul class="education">
+        <li><span class="tm">2009 - present</span> 
+        Ph.D., 
+        <a href="http://www-cse.ucsd.edu/">Computer Science and Engineering</a>, <br />
+        <a href="http://www.ucsd.edu/">University of California, San Diego</a>
+        </li>
+
+        <li><span class="tm">2005 - 2009</span> 
+        B.S., 
+        <a href="http://itcs.tsinghua.edu.cn/en/yaoclass">Yao Class</a>, 
+        Computer Science and Technology,
+        <a href="http://www.tsinghua.edu.cn/">Tsinghua University</a>, Beijing
+        </li>
+    </ul>
+
+    <h2>Awards</h2>
+    
+    <ul class="awards">
+        <li><span class="tm">2009</span>
+        Jacobs School Alumni Fellowship. <br /> UC, San Diego</li>
+    </ul>
+
+    <h2>Misc</h2>
+
+    <p>My hometown is <a href="http://maps.google.com/maps/place?ftid=0x5e385df36dbd9a6f:0x9fc7d4f42756b198&amp;q=changchun&amp;hl=en&amp;ie=UTF8&amp;ll=44.242248,124.267731&amp;spn=0.000984,0.001373&amp;t=m&amp;z=10&amp;vpsrc=0">Changchun</a>. It snowed a lot when I was young.</p>
+    
+</div></div></body>
+
