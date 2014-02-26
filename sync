@@ -1,2 +1,2 @@
-scp * login.eng.ucsd.edu:www/.
-scp * hm:www/.
+scp photo.jpeg index.html login.eng.ucsd.edu:www/.
+scp photo.jpeg index.html hm:www/.
