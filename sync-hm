@@ -1,1 +1,1 @@
-scp photo.jpeg index.html hm:www/.
+scp photo.jpeg index.html *.pdf hm:www/.
