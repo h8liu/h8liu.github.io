@@ -17,8 +17,7 @@
     });
     $(document).keydown(function(ev) {
       var _ref;
-      console.log(ev.which);
-      if ((_ref = ev.which) === 8 || _ref === 46 || _ref === 13 || _ref === 37 || _ref === 39) {
+      if ((_ref = ev.which) === 8 || _ref === 46 || _ref === 13 || _ref === 37 || _ref === 39 || _ref === 9) {
         ev.preventDefault();
       }
       if (ev.which === 8) {
@@ -34,7 +33,10 @@
         c8.cons.moveCurLeft();
       }
       if (ev.which === 39) {
-        return c8.cons.moveCurRight();
+        c8.cons.moveCurRight();
+      }
+      if (ev.which === 9) {
+        return c8.cons.insertTab();
       }
     });
   };
@@ -364,6 +366,7 @@
     self.cons.addLine(self.prompt);
     self.line = '';
     self.curPos = 0;
+    self.launcher = null;
     self.redraw = function() {
       self.cons.setLastLine(self.prompt + self.line);
       self.cons.setCursor(self.prompt.length + self.curPos);
@@ -376,6 +379,9 @@
       after = line.substr(self.curPos, line.length);
       self.line = before + c + after;
       self.curPos++;
+    };
+    self.insertTab = function() {
+      self.insertChar(' ');
     };
     self.backChar = function(c) {
       var after, before, line;
@@ -409,11 +415,18 @@
     };
     self.enter = function() {
       if (self.line.length > 0) {
-        self.cons.addLine('You typed: ' + self.line);
+        self.launch(self.line);
       }
       self.cons.addLine(self.prompt);
       self.curPos = 0;
       self.line = '';
+    };
+    self.launch = function(line) {
+      if (self.launcher === null) {
+        return self.cons.addLine('You typed: ' + line);
+      } else {
+        return self.launcher.launch(line);
+      }
     };
   };
 
