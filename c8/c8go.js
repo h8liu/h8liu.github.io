@@ -12952,7 +12952,9 @@ go$packages["github.com/h8liu/c8/c8go/shell"] = (function() {
 			fmt.Fprint(out, new (go$sliceType(go$emptyInterface))([new Go$String(p)]));
 			_i++;
 		}
-		fmt.Fprintln(out, new (go$sliceType(go$emptyInterface))([]));
+		if (lst.length > 0) {
+			fmt.Fprintln(out, new (go$sliceType(go$emptyInterface))([]));
+		}
 		return 0;
 	};
 	mkdir = function(args, out) {
