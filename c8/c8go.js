@@ -12573,7 +12573,7 @@ go$packages["strings"] = (function() {
 	return go$pkg;
 })();
 go$packages["path/filepath"] = (function() {
-	var go$pkg = {}, errors = go$packages["errors"], os = go$packages["os"], runtime = go$packages["runtime"], sort = go$packages["sort"], strings = go$packages["strings"], utf8 = go$packages["unicode/utf8"], bytes = go$packages["bytes"], lazybuf, Clean, FromSlash, Join, IsAbs, volumeNameLen;
+	var go$pkg = {}, errors = go$packages["errors"], os = go$packages["os"], runtime = go$packages["runtime"], sort = go$packages["sort"], strings = go$packages["strings"], utf8 = go$packages["unicode/utf8"], bytes = go$packages["bytes"], lazybuf, Clean, FromSlash, Split, Join, VolumeName, IsAbs, volumeNameLen;
 	lazybuf = go$pkg.lazybuf = go$newType(0, "Struct", "filepath.lazybuf", "lazybuf", "path/filepath", function(path_, buf_, w_, volAndPath_, volLen_) {
 		this.go$val = this;
 		this.path = path_ !== undefined ? path_ : "";
@@ -12673,6 +12673,18 @@ go$packages["path/filepath"] = (function() {
 		return path;
 		return strings.Replace(path, "/", "/", -1);
 	};
+	Split = go$pkg.Split = function(path) {
+		var dir, file, vol, i, _tmp, _tmp$1;
+		dir = "";
+		file = "";
+		vol = VolumeName(path);
+		i = path.length - 1 >> 0;
+		while (i >= vol.length && !os.IsPathSeparator(path.charCodeAt(i))) {
+			i = i - 1 >> 0;
+		}
+		_tmp = path.substring(0, (i + 1 >> 0)); _tmp$1 = path.substring((i + 1 >> 0)); dir = _tmp; file = _tmp$1;
+		return [dir, file];
+	};
 	Join = go$pkg.Join = function(elem) {
 		var _ref, _i, e, i;
 		_ref = elem;
@@ -12686,6 +12698,12 @@ go$packages["path/filepath"] = (function() {
 			_i++;
 		}
 		return "";
+	};
+	VolumeName = go$pkg.VolumeName = function(path) {
+		var v;
+		v = "";
+		v = path.substring(0, volumeNameLen(path));
+		return v;
 	};
 	IsAbs = go$pkg.IsAbs = function(path) {
 		return strings.HasPrefix(path, "/");
@@ -12702,7 +12720,7 @@ go$packages["path/filepath"] = (function() {
 	return go$pkg;
 })();
 go$packages["github.com/h8liu/c8/c8go/fs"] = (function() {
-	var go$pkg = {}, bytes = go$packages["bytes"], filepath = go$packages["path/filepath"], strings = go$packages["strings"], Dir, File, FileSys, Node, NewDir, NewFile, NewFileSys;
+	var go$pkg = {}, bytes = go$packages["bytes"], filepath = go$packages["path/filepath"], strings = go$packages["strings"], Dir, File, FileSys, Node, IsValid, NewDir, NewFile, NewFileSys;
 	Dir = go$pkg.Dir = go$newType(0, "Struct", "fs.Dir", "Dir", "github.com/h8liu/c8/c8go/fs", function(perm_, subs_) {
 		this.go$val = this;
 		this.perm = perm_ !== undefined ? perm_ : 0;
@@ -12718,6 +12736,33 @@ go$packages["github.com/h8liu/c8/c8go/fs"] = (function() {
 		this.root = root_ !== undefined ? root_ : (go$ptrType(Dir)).nil;
 	});
 	Node = go$pkg.Node = go$newType(8, "Interface", "fs.Node", "Node", "github.com/h8liu/c8/c8go/fs", null);
+	IsValid = go$pkg.IsValid = function(name) {
+		var _ref, _i, _rune, r;
+		_ref = name;
+		_i = 0;
+		while (_i < _ref.length) {
+			_rune = go$decodeRune(_ref, _i);
+			r = _rune[0];
+			if (48 <= r && r <= 57) {
+				_i += _rune[1];
+				continue;
+			}
+			if (65 <= r && r <= 90) {
+				_i += _rune[1];
+				continue;
+			}
+			if (97 <= r && r <= 122) {
+				_i += _rune[1];
+				continue;
+			}
+			if ((r === 45) || (r === 95) || (r === 46)) {
+				_i += _rune[1];
+				continue;
+			}
+			return false;
+		}
+		return true;
+	};
 	NewDir = go$pkg.NewDir = function(perm) {
 		var ret;
 		ret = new Dir.Ptr();
@@ -12734,6 +12779,13 @@ go$packages["github.com/h8liu/c8/c8go/fs"] = (function() {
 	Dir.Ptr.prototype.Set = function(name, node) {
 		var d, _key;
 		d = this;
+		if (!IsValid(name)) {
+			return;
+		}
+		if (go$interfaceIsEqual(node, null)) {
+			delete d.subs[name];
+			return;
+		}
 		_key = name; (d.subs || go$throwRuntimeError("assignment to entry in nil map"))[_key] = { k: _key, v: node };
 	};
 	Dir.prototype.Set = function(name, node) { return this.go$val.Set(name, node); };
@@ -12854,7 +12906,7 @@ go$packages["github.com/h8liu/c8/c8go/shell"] = (function() {
 	cd = function(args, out) {
 		var rel, pwd$1, node, _tuple, isDir;
 		if (args.length >= 3) {
-			fmt.Fprintln(out, new (go$sliceType(go$emptyInterface))([new Go$String("cd taks at most one arg")]));
+			fmt.Fprintln(out, new (go$sliceType(go$emptyInterface))([new Go$String("error: cd takes at most one arg")]));
 			return -1;
 		}
 		if (args.length <= 1) {
@@ -12865,12 +12917,12 @@ go$packages["github.com/h8liu/c8/c8go/shell"] = (function() {
 		pwd$1 = filepath.Join(new (go$sliceType(Go$String))([go$pkg.Pwd, rel]));
 		node = fileSys.Get(pwd$1);
 		if (go$interfaceIsEqual(node, null)) {
-			fmt.Fprintln(out, new (go$sliceType(go$emptyInterface))([new Go$String("directory not found")]));
+			fmt.Fprintln(out, new (go$sliceType(go$emptyInterface))([new Go$String("error: directory not found or name invalid")]));
 			return -1;
 		}
 		_tuple = (node !== null && node.constructor === (go$ptrType(fs.Dir)) ? [node.go$val, true] : [(go$ptrType(fs.Dir)).nil, false]); isDir = _tuple[1];
 		if (!isDir) {
-			fmt.Fprintln(out, new (go$sliceType(go$emptyInterface))([new Go$String("target is not a directory")]));
+			fmt.Fprintln(out, new (go$sliceType(go$emptyInterface))([new Go$String("error: target is not a directory")]));
 			return -1;
 		}
 		go$pkg.Pwd = pwd$1;
@@ -12904,24 +12956,30 @@ go$packages["github.com/h8liu/c8/c8go/shell"] = (function() {
 		return 0;
 	};
 	mkdir = function(args, out) {
-		var node, _tuple, dir, okay, name, newDir;
+		var rel, path, _tuple, dir, name, node, _tuple$1, d, okay, newDir;
 		if (!((args.length === 2))) {
 			fmt.Fprintf(out, "mkdir needs an arg\n", new (go$sliceType(go$emptyInterface))([]));
 			return -1;
 		}
-		node = fileSys.Get(go$pkg.Pwd);
-		_tuple = (node !== null && node.constructor === (go$ptrType(fs.Dir)) ? [node.go$val, true] : [(go$ptrType(fs.Dir)).nil, false]); dir = _tuple[0]; okay = _tuple[1];
+		rel = ((1 < 0 || 1 >= args.length) ? go$throwRuntimeError("index out of range") : args.array[args.offset + 1]);
+		path = filepath.Join(new (go$sliceType(Go$String))([go$pkg.Pwd, rel]));
+		_tuple = filepath.Split(path); dir = _tuple[0]; name = _tuple[1];
+		node = fileSys.Get(dir);
+		_tuple$1 = (node !== null && node.constructor === (go$ptrType(fs.Dir)) ? [node.go$val, true] : [(go$ptrType(fs.Dir)).nil, false]); d = _tuple$1[0]; okay = _tuple$1[1];
 		if (!okay) {
-			fmt.Fprintf(out, "error: current working directory does not exist\n", new (go$sliceType(go$emptyInterface))([]));
+			fmt.Fprintf(out, "error: target directory does not exist\n", new (go$sliceType(go$emptyInterface))([]));
 			return -1;
 		}
-		name = ((1 < 0 || 1 >= args.length) ? go$throwRuntimeError("index out of range") : args.array[args.offset + 1]);
-		if (!(go$interfaceIsEqual(dir.Get(((1 < 0 || 1 >= args.length) ? go$throwRuntimeError("index out of range") : args.array[args.offset + 1])), null))) {
-			fmt.Fprintf(out, "%q already exists\n", new (go$sliceType(go$emptyInterface))([new Go$String(name)]));
+		if (!fs.IsValid(name)) {
+			fmt.Fprintf(out, "error: invalid directory name\n", new (go$sliceType(go$emptyInterface))([new Go$String(name)]));
+			return -1;
+		}
+		if (!(go$interfaceIsEqual(d.Get(name), null))) {
+			fmt.Fprintf(out, "error: %q already exists\n", new (go$sliceType(go$emptyInterface))([new Go$String(name)]));
 			return -1;
 		}
 		newDir = fs.NewDir(0);
-		dir.Set(name, newDir);
+		d.Set(name, newDir);
 		return 0;
 	};
 	notImpl = function(args, out) {
