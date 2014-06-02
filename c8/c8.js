@@ -382,7 +382,7 @@
     var self;
     self = this;
     self.cons = new Console(canvas);
-    self.prompt = '$ ';
+    self.prompt = c8go.pwd() + '$ ';
     self.cons.addLine(self.prompt);
     self.line = '';
     self.curPos = 0;
@@ -453,10 +453,11 @@
     };
     self.launch = function(line) {
       if (self.launchFunc === null) {
-        return self.cons.addLine('launch func missing');
+        self.cons.addLine('launch func missing');
       } else {
-        return self.launchFunc(line, self.out);
+        self.launchFunc(line, self.out);
       }
+      self.prompt = c8go.pwd() + '$ ';
     };
   };
 
