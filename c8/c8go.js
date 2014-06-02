@@ -13021,7 +13021,7 @@ go$packages["github.com/h8liu/c8/c8go/writer"] = (function() {
 	return go$pkg;
 })();
 go$packages["/Users/h8liu/gopath/src/github.com/h8liu/c8/c8go"] = (function() {
-	var go$pkg = {}, fmt = go$packages["fmt"], js = go$packages["github.com/gopherjs/gopherjs/js"], strings = go$packages["strings"], shell = go$packages["github.com/h8liu/c8/c8go/shell"], writer = go$packages["github.com/h8liu/c8/c8go/writer"], main, Launch, Pwd;
+	var go$pkg = {}, fmt = go$packages["fmt"], strings = go$packages["strings"], js = go$packages["github.com/gopherjs/gopherjs/js"], shell = go$packages["github.com/h8liu/c8/c8go/shell"], writer = go$packages["github.com/h8liu/c8/c8go/writer"], main, Launch, Pwd;
 	main = go$pkg.main = function() {
 		var global, _map, _key;
 		global = go$global;
