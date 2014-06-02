@@ -5355,7 +5355,7 @@ go$packages["time"] = (function() {
 	return go$pkg;
 })();
 go$packages["os"] = (function() {
-	var go$pkg = {}, js = go$packages["github.com/gopherjs/gopherjs/js"], io = go$packages["io"], syscall = go$packages["syscall"], time = go$packages["time"], errors = go$packages["errors"], runtime = go$packages["runtime"], atomic = go$packages["sync/atomic"], sync = go$packages["sync"], PathError, SyscallError, File, file, dirInfo, FileInfo, FileMode, fileStat, NewSyscallError, sigpipe, syscallMode, NewFile, epipecheck, Lstat, basename, useSyscallwdDarwin, fileInfoFromStat, timespecToTime, lstat, useSyscallwd;
+	var go$pkg = {}, js = go$packages["github.com/gopherjs/gopherjs/js"], io = go$packages["io"], syscall = go$packages["syscall"], time = go$packages["time"], errors = go$packages["errors"], runtime = go$packages["runtime"], atomic = go$packages["sync/atomic"], sync = go$packages["sync"], PathError, SyscallError, File, file, dirInfo, FileInfo, FileMode, fileStat, NewSyscallError, sigpipe, syscallMode, NewFile, epipecheck, Lstat, basename, useSyscallwdDarwin, IsPathSeparator, fileInfoFromStat, timespecToTime, lstat, useSyscallwd;
 	PathError = go$pkg.PathError = go$newType(0, "Struct", "os.PathError", "PathError", "os", function(Op_, Path_, Err_) {
 		this.go$val = this;
 		this.Op = Op_ !== undefined ? Op_ : "";
@@ -5888,6 +5888,9 @@ go$packages["os"] = (function() {
 	};
 	useSyscallwdDarwin = function(err) {
 		return !(go$interfaceIsEqual(err, new syscall.Errno(45)));
+	};
+	IsPathSeparator = go$pkg.IsPathSeparator = function(c) {
+		return 47 === c;
 	};
 	fileInfoFromStat = function(st, name) {
 		var _struct, _struct$1, fs, _ref;
@@ -10317,7 +10320,7 @@ go$packages["reflect"] = (function() {
 	return go$pkg;
 })();
 go$packages["fmt"] = (function() {
-	var go$pkg = {}, strconv = go$packages["strconv"], utf8 = go$packages["unicode/utf8"], errors = go$packages["errors"], io = go$packages["io"], os = go$packages["os"], reflect = go$packages["reflect"], sync = go$packages["sync"], math = go$packages["math"], fmt, State, Formatter, Stringer, GoStringer, buffer, pp, cache, runeUnreader, scanError, ss, ssave, doPrec, newCache, newPrinter, Fprintf, Fprintln, Println, getField, parsenum, intFromArg, parseArgNumber, isSpace, notSpace, indexRune, padZeroBytes, padSpaceBytes, trueBytes, falseBytes, commaSpaceBytes, nilAngleBytes, nilParenBytes, nilBytes, mapBytes, percentBangBytes, missingBytes, badIndexBytes, panicBytes, extraBytes, irparenBytes, bytesBytes, badWidthBytes, badPrecBytes, noVerbBytes, ppFree, intBits, uintptrBits, space, ssFree, complexError, boolError;
+	var go$pkg = {}, strconv = go$packages["strconv"], utf8 = go$packages["unicode/utf8"], errors = go$packages["errors"], io = go$packages["io"], os = go$packages["os"], reflect = go$packages["reflect"], sync = go$packages["sync"], math = go$packages["math"], fmt, State, Formatter, Stringer, GoStringer, buffer, pp, cache, runeUnreader, scanError, ss, ssave, doPrec, newCache, newPrinter, Fprintf, Fprint, Fprintln, Println, getField, parsenum, intFromArg, parseArgNumber, isSpace, notSpace, indexRune, padZeroBytes, padSpaceBytes, trueBytes, falseBytes, commaSpaceBytes, nilAngleBytes, nilParenBytes, nilBytes, mapBytes, percentBangBytes, missingBytes, badIndexBytes, panicBytes, extraBytes, irparenBytes, bytesBytes, badWidthBytes, badPrecBytes, noVerbBytes, ppFree, intBits, uintptrBits, space, ssFree, complexError, boolError;
 	fmt = go$pkg.fmt = go$newType(0, "Struct", "fmt.fmt", "fmt", "fmt", function(intbuf_, buf_, wid_, prec_, widPresent_, precPresent_, minus_, plus_, sharp_, space_, unicode_, uniQuote_, zero_) {
 		this.go$val = this;
 		this.intbuf = intbuf_ !== undefined ? intbuf_ : go$makeNativeArray("Uint8", 65, function() { return 0; });
@@ -10991,6 +10994,16 @@ go$packages["fmt"] = (function() {
 		err = null;
 		p = newPrinter();
 		p.doPrintf(format, a);
+		_tuple = w.Write((x = p.buf, go$subslice(new (go$sliceType(Go$Uint8))(x.array), x.offset, x.offset + x.length))); n = _tuple[0]; err = _tuple[1];
+		p.free();
+		return [n, err];
+	};
+	Fprint = go$pkg.Fprint = function(w, a) {
+		var n, err, p, _tuple, x;
+		n = 0;
+		err = null;
+		p = newPrinter();
+		p.doPrint(a, false, false);
 		_tuple = w.Write((x = p.buf, go$subslice(new (go$sliceType(Go$Uint8))(x.array), x.offset, x.offset + x.length))); n = _tuple[0]; err = _tuple[1];
 		p.free();
 		return [n, err];
@@ -12275,13 +12288,651 @@ go$packages["fmt"] = (function() {
 	}
 	return go$pkg;
 })();
+go$packages["sort"] = (function() {
+	var go$pkg = {};
+	go$pkg.init = function() {
+	}
+	return go$pkg;
+})();
+go$packages["strings"] = (function() {
+	var go$pkg = {}, js = go$packages["github.com/gopherjs/gopherjs/js"], errors = go$packages["errors"], io = go$packages["io"], utf8 = go$packages["unicode/utf8"], unicode = go$packages["unicode"], IndexByte, explode, hashstr, Count, Index, genSplit, Split, Fields, FieldsFunc, Join, HasPrefix, Replace;
+	IndexByte = go$pkg.IndexByte = function(s, c) {
+		return go$parseInt(s.indexOf(go$global.String.fromCharCode(c))) >> 0;
+	};
+	explode = function(s, n) {
+		var l, a, size, ch, _tmp, _tmp$1, i, cur, _tuple;
+		if (n === 0) {
+			return (go$sliceType(Go$String)).nil;
+		}
+		l = utf8.RuneCountInString(s);
+		if (n <= 0 || n > l) {
+			n = l;
+		}
+		a = (go$sliceType(Go$String)).make(n, 0, function() { return ""; });
+		size = 0;
+		ch = 0;
+		_tmp = 0; _tmp$1 = 0; i = _tmp; cur = _tmp$1;
+		while ((i + 1 >> 0) < n) {
+			_tuple = utf8.DecodeRuneInString(s.substring(cur)); ch = _tuple[0]; size = _tuple[1];
+			if (ch === 65533) {
+				(i < 0 || i >= a.length) ? go$throwRuntimeError("index out of range") : a.array[a.offset + i] = "\xEF\xBF\xBD";
+			} else {
+				(i < 0 || i >= a.length) ? go$throwRuntimeError("index out of range") : a.array[a.offset + i] = s.substring(cur, (cur + size >> 0));
+			}
+			cur = cur + (size) >> 0;
+			i = i + 1 >> 0;
+		}
+		if (cur < s.length) {
+			(i < 0 || i >= a.length) ? go$throwRuntimeError("index out of range") : a.array[a.offset + i] = s.substring(cur);
+		}
+		return a;
+	};
+	hashstr = function(sep) {
+		var hash, i, _tmp, _tmp$1, pow, sq, i$1, x, x$1;
+		hash = 0;
+		i = 0;
+		while (i < sep.length) {
+			hash = ((((hash >>> 16 << 16) * 16777619 >>> 0) + (hash << 16 >>> 16) * 16777619) >>> 0) + (sep.charCodeAt(i) >>> 0) >>> 0;
+			i = i + 1 >> 0;
+		}
+		_tmp = 1; _tmp$1 = 16777619; pow = _tmp; sq = _tmp$1;
+		i$1 = sep.length;
+		while (i$1 > 0) {
+			if (!(((i$1 & 1) === 0))) {
+				pow = (x = sq, (((pow >>> 16 << 16) * x >>> 0) + (pow << 16 >>> 16) * x) >>> 0);
+			}
+			sq = (x$1 = sq, (((sq >>> 16 << 16) * x$1 >>> 0) + (sq << 16 >>> 16) * x$1) >>> 0);
+			i$1 = i$1 >> 1 >> 0;
+		}
+		return [hash, pow];
+	};
+	Count = go$pkg.Count = function(s, sep) {
+		var n, c, i, _tuple, hashsep, pow, h, i$1, lastmatch, i$2, x;
+		n = 0;
+		if (sep.length === 0) {
+			return utf8.RuneCountInString(s) + 1 >> 0;
+		} else if (sep.length === 1) {
+			c = sep.charCodeAt(0);
+			i = 0;
+			while (i < s.length) {
+				if (s.charCodeAt(i) === c) {
+					n = n + 1 >> 0;
+				}
+				i = i + 1 >> 0;
+			}
+			return n;
+		} else if (sep.length > s.length) {
+			return 0;
+		} else if (sep.length === s.length) {
+			if (sep === s) {
+				return 1;
+			}
+			return 0;
+		}
+		_tuple = hashstr(sep); hashsep = _tuple[0]; pow = _tuple[1];
+		h = 0;
+		i$1 = 0;
+		while (i$1 < sep.length) {
+			h = ((((h >>> 16 << 16) * 16777619 >>> 0) + (h << 16 >>> 16) * 16777619) >>> 0) + (s.charCodeAt(i$1) >>> 0) >>> 0;
+			i$1 = i$1 + 1 >> 0;
+		}
+		lastmatch = 0;
+		if ((h === hashsep) && s.substring(0, sep.length) === sep) {
+			n = n + 1 >> 0;
+			lastmatch = sep.length;
+		}
+		i$2 = sep.length;
+		while (i$2 < s.length) {
+			h = (((h >>> 16 << 16) * 16777619 >>> 0) + (h << 16 >>> 16) * 16777619) >>> 0;
+			h = h + ((s.charCodeAt(i$2) >>> 0)) >>> 0;
+			h = h - ((x = (s.charCodeAt((i$2 - sep.length >> 0)) >>> 0), (((pow >>> 16 << 16) * x >>> 0) + (pow << 16 >>> 16) * x) >>> 0)) >>> 0;
+			i$2 = i$2 + 1 >> 0;
+			if ((h === hashsep) && lastmatch <= (i$2 - sep.length >> 0) && s.substring((i$2 - sep.length >> 0), i$2) === sep) {
+				n = n + 1 >> 0;
+				lastmatch = i$2;
+			}
+		}
+		return n;
+	};
+	Index = go$pkg.Index = function(s, sep) {
+		var n, _tuple, hashsep, pow, h, i, i$1, x;
+		n = sep.length;
+		if (n === 0) {
+			return 0;
+		} else if (n === 1) {
+			return IndexByte(s, sep.charCodeAt(0));
+		} else if (n === s.length) {
+			if (sep === s) {
+				return 0;
+			}
+			return -1;
+		} else if (n > s.length) {
+			return -1;
+		}
+		_tuple = hashstr(sep); hashsep = _tuple[0]; pow = _tuple[1];
+		h = 0;
+		i = 0;
+		while (i < n) {
+			h = ((((h >>> 16 << 16) * 16777619 >>> 0) + (h << 16 >>> 16) * 16777619) >>> 0) + (s.charCodeAt(i) >>> 0) >>> 0;
+			i = i + 1 >> 0;
+		}
+		if ((h === hashsep) && s.substring(0, n) === sep) {
+			return 0;
+		}
+		i$1 = n;
+		while (i$1 < s.length) {
+			h = (((h >>> 16 << 16) * 16777619 >>> 0) + (h << 16 >>> 16) * 16777619) >>> 0;
+			h = h + ((s.charCodeAt(i$1) >>> 0)) >>> 0;
+			h = h - ((x = (s.charCodeAt((i$1 - n >> 0)) >>> 0), (((pow >>> 16 << 16) * x >>> 0) + (pow << 16 >>> 16) * x) >>> 0)) >>> 0;
+			i$1 = i$1 + 1 >> 0;
+			if ((h === hashsep) && s.substring((i$1 - n >> 0), i$1) === sep) {
+				return i$1 - n >> 0;
+			}
+		}
+		return -1;
+	};
+	genSplit = function(s, sep, sepSave, n) {
+		var c, start, a, na, i;
+		if (n === 0) {
+			return (go$sliceType(Go$String)).nil;
+		}
+		if (sep === "") {
+			return explode(s, n);
+		}
+		if (n < 0) {
+			n = Count(s, sep) + 1 >> 0;
+		}
+		c = sep.charCodeAt(0);
+		start = 0;
+		a = (go$sliceType(Go$String)).make(n, 0, function() { return ""; });
+		na = 0;
+		i = 0;
+		while ((i + sep.length >> 0) <= s.length && (na + 1 >> 0) < n) {
+			if ((s.charCodeAt(i) === c) && ((sep.length === 1) || s.substring(i, (i + sep.length >> 0)) === sep)) {
+				(na < 0 || na >= a.length) ? go$throwRuntimeError("index out of range") : a.array[a.offset + na] = s.substring(start, (i + sepSave >> 0));
+				na = na + 1 >> 0;
+				start = i + sep.length >> 0;
+				i = i + ((sep.length - 1 >> 0)) >> 0;
+			}
+			i = i + 1 >> 0;
+		}
+		(na < 0 || na >= a.length) ? go$throwRuntimeError("index out of range") : a.array[a.offset + na] = s.substring(start);
+		return go$subslice(a, 0, (na + 1 >> 0));
+	};
+	Split = go$pkg.Split = function(s, sep) {
+		return genSplit(s, sep, 0, -1);
+	};
+	Fields = go$pkg.Fields = function(s) {
+		return FieldsFunc(s, unicode.IsSpace);
+	};
+	FieldsFunc = go$pkg.FieldsFunc = function(s, f) {
+		var n, inField, _ref, _i, _rune, rune, wasInField, a, na, fieldStart, _ref$1, _i$1, _rune$1, rune$1, i;
+		n = 0;
+		inField = false;
+		_ref = s;
+		_i = 0;
+		while (_i < _ref.length) {
+			_rune = go$decodeRune(_ref, _i);
+			rune = _rune[0];
+			wasInField = inField;
+			inField = !f(rune);
+			if (inField && !wasInField) {
+				n = n + 1 >> 0;
+			}
+			_i += _rune[1];
+		}
+		a = (go$sliceType(Go$String)).make(n, 0, function() { return ""; });
+		na = 0;
+		fieldStart = -1;
+		_ref$1 = s;
+		_i$1 = 0;
+		while (_i$1 < _ref$1.length) {
+			_rune$1 = go$decodeRune(_ref$1, _i$1);
+			rune$1 = _rune$1[0];
+			i = _i$1;
+			if (f(rune$1)) {
+				if (fieldStart >= 0) {
+					(na < 0 || na >= a.length) ? go$throwRuntimeError("index out of range") : a.array[a.offset + na] = s.substring(fieldStart, i);
+					na = na + 1 >> 0;
+					fieldStart = -1;
+				}
+			} else if (fieldStart === -1) {
+				fieldStart = i;
+			}
+			_i$1 += _rune$1[1];
+		}
+		if (fieldStart >= 0) {
+			(na < 0 || na >= a.length) ? go$throwRuntimeError("index out of range") : a.array[a.offset + na] = s.substring(fieldStart);
+		}
+		return a;
+	};
+	Join = go$pkg.Join = function(a, sep) {
+		var x, x$1, n, i, b, bp, _ref, _i, s;
+		if (a.length === 0) {
+			return "";
+		}
+		if (a.length === 1) {
+			return ((0 < 0 || 0 >= a.length) ? go$throwRuntimeError("index out of range") : a.array[a.offset + 0]);
+		}
+		n = (x = sep.length, x$1 = (a.length - 1 >> 0), (((x >>> 16 << 16) * x$1 >> 0) + (x << 16 >>> 16) * x$1) >> 0);
+		i = 0;
+		while (i < a.length) {
+			n = n + (((i < 0 || i >= a.length) ? go$throwRuntimeError("index out of range") : a.array[a.offset + i]).length) >> 0;
+			i = i + 1 >> 0;
+		}
+		b = (go$sliceType(Go$Uint8)).make(n, 0, function() { return 0; });
+		bp = go$copyString(b, ((0 < 0 || 0 >= a.length) ? go$throwRuntimeError("index out of range") : a.array[a.offset + 0]));
+		_ref = go$subslice(a, 1);
+		_i = 0;
+		while (_i < _ref.length) {
+			s = ((_i < 0 || _i >= _ref.length) ? go$throwRuntimeError("index out of range") : _ref.array[_ref.offset + _i]);
+			bp = bp + (go$copyString(go$subslice(b, bp), sep)) >> 0;
+			bp = bp + (go$copyString(go$subslice(b, bp), s)) >> 0;
+			_i++;
+		}
+		return go$bytesToString(b);
+	};
+	HasPrefix = go$pkg.HasPrefix = function(s, prefix) {
+		return s.length >= prefix.length && s.substring(0, prefix.length) === prefix;
+	};
+	Replace = go$pkg.Replace = function(s, old, new$1, n) {
+		var m, x, t, w, start, i, j, _tuple, wid;
+		if (old === new$1 || (n === 0)) {
+			return s;
+		}
+		m = Count(s, old);
+		if (m === 0) {
+			return s;
+		} else if (n < 0 || m < n) {
+			n = m;
+		}
+		t = (go$sliceType(Go$Uint8)).make((s.length + (x = (new$1.length - old.length >> 0), (((n >>> 16 << 16) * x >> 0) + (n << 16 >>> 16) * x) >> 0) >> 0), 0, function() { return 0; });
+		w = 0;
+		start = 0;
+		i = 0;
+		while (i < n) {
+			j = start;
+			if (old.length === 0) {
+				if (i > 0) {
+					_tuple = utf8.DecodeRuneInString(s.substring(start)); wid = _tuple[1];
+					j = j + (wid) >> 0;
+				}
+			} else {
+				j = j + (Index(s.substring(start), old)) >> 0;
+			}
+			w = w + (go$copyString(go$subslice(t, w), s.substring(start, j))) >> 0;
+			w = w + (go$copyString(go$subslice(t, w), new$1)) >> 0;
+			start = j + old.length >> 0;
+			i = i + 1 >> 0;
+		}
+		w = w + (go$copyString(go$subslice(t, w), s.substring(start))) >> 0;
+		return go$bytesToString(go$subslice(t, 0, w));
+	};
+	go$pkg.init = function() {
+	}
+	return go$pkg;
+})();
+go$packages["path/filepath"] = (function() {
+	var go$pkg = {}, errors = go$packages["errors"], os = go$packages["os"], runtime = go$packages["runtime"], sort = go$packages["sort"], strings = go$packages["strings"], utf8 = go$packages["unicode/utf8"], bytes = go$packages["bytes"], lazybuf, Clean, FromSlash, Join, IsAbs, volumeNameLen;
+	lazybuf = go$pkg.lazybuf = go$newType(0, "Struct", "filepath.lazybuf", "lazybuf", "path/filepath", function(path_, buf_, w_, volAndPath_, volLen_) {
+		this.go$val = this;
+		this.path = path_ !== undefined ? path_ : "";
+		this.buf = buf_ !== undefined ? buf_ : (go$sliceType(Go$Uint8)).nil;
+		this.w = w_ !== undefined ? w_ : 0;
+		this.volAndPath = volAndPath_ !== undefined ? volAndPath_ : "";
+		this.volLen = volLen_ !== undefined ? volLen_ : 0;
+	});
+	lazybuf.Ptr.prototype.index = function(i) {
+		var b, x;
+		b = this;
+		if (!(b.buf === (go$sliceType(Go$Uint8)).nil)) {
+			return (x = b.buf, ((i < 0 || i >= x.length) ? go$throwRuntimeError("index out of range") : x.array[x.offset + i]));
+		}
+		return b.path.charCodeAt(i);
+	};
+	lazybuf.prototype.index = function(i) { return this.go$val.index(i); };
+	lazybuf.Ptr.prototype.append = function(c) {
+		var b, x, x$1;
+		b = this;
+		if (b.buf === (go$sliceType(Go$Uint8)).nil) {
+			if (b.w < b.path.length && (b.path.charCodeAt(b.w) === c)) {
+				b.w = b.w + 1 >> 0;
+				return;
+			}
+			b.buf = (go$sliceType(Go$Uint8)).make(b.path.length, 0, function() { return 0; });
+			go$copyString(b.buf, b.path.substring(0, b.w));
+		}
+		(x = b.buf, x$1 = b.w, (x$1 < 0 || x$1 >= x.length) ? go$throwRuntimeError("index out of range") : x.array[x.offset + x$1] = c);
+		b.w = b.w + 1 >> 0;
+	};
+	lazybuf.prototype.append = function(c) { return this.go$val.append(c); };
+	lazybuf.Ptr.prototype.string = function() {
+		var b;
+		b = this;
+		if (b.buf === (go$sliceType(Go$Uint8)).nil) {
+			return b.volAndPath.substring(0, (b.volLen + b.w >> 0));
+		}
+		return b.volAndPath.substring(0, b.volLen) + go$bytesToString(go$subslice(b.buf, 0, b.w));
+	};
+	lazybuf.prototype.string = function() { return this.go$val.string(); };
+	Clean = go$pkg.Clean = function(path) {
+		var originalPath, volLen, rooted, n, out, _tmp, _tmp$1, r, dotdot, _tmp$2, _tmp$3;
+		originalPath = path;
+		volLen = volumeNameLen(path);
+		path = path.substring(volLen);
+		if (path === "") {
+			if (volLen > 1 && !((originalPath.charCodeAt(1) === 58))) {
+				return FromSlash(originalPath);
+			}
+			return originalPath + ".";
+		}
+		rooted = os.IsPathSeparator(path.charCodeAt(0));
+		n = path.length;
+		out = new lazybuf.Ptr(path, (go$sliceType(Go$Uint8)).nil, 0, originalPath, volLen);
+		_tmp = 0; _tmp$1 = 0; r = _tmp; dotdot = _tmp$1;
+		if (rooted) {
+			out.append(47);
+			_tmp$2 = 1; _tmp$3 = 1; r = _tmp$2; dotdot = _tmp$3;
+		}
+		while (r < n) {
+			if (os.IsPathSeparator(path.charCodeAt(r))) {
+				r = r + 1 >> 0;
+			} else if ((path.charCodeAt(r) === 46) && (((r + 1 >> 0) === n) || os.IsPathSeparator(path.charCodeAt((r + 1 >> 0))))) {
+				r = r + 1 >> 0;
+			} else if ((path.charCodeAt(r) === 46) && (path.charCodeAt((r + 1 >> 0)) === 46) && (((r + 2 >> 0) === n) || os.IsPathSeparator(path.charCodeAt((r + 2 >> 0))))) {
+				r = r + 2 >> 0;
+				if (out.w > dotdot) {
+					out.w = out.w - 1 >> 0;
+					while (out.w > dotdot && !os.IsPathSeparator(out.index(out.w))) {
+						out.w = out.w - 1 >> 0;
+					}
+				} else if (!rooted) {
+					if (out.w > 0) {
+						out.append(47);
+					}
+					out.append(46);
+					out.append(46);
+					dotdot = out.w;
+				}
+			} else {
+				if (rooted && !((out.w === 1)) || !rooted && !((out.w === 0))) {
+					out.append(47);
+				}
+				while (r < n && !os.IsPathSeparator(path.charCodeAt(r))) {
+					out.append(path.charCodeAt(r));
+					r = r + 1 >> 0;
+				}
+			}
+		}
+		if (out.w === 0) {
+			out.append(46);
+		}
+		return FromSlash(out.string());
+	};
+	FromSlash = go$pkg.FromSlash = function(path) {
+		return path;
+		return strings.Replace(path, "/", "/", -1);
+	};
+	Join = go$pkg.Join = function(elem) {
+		var _ref, _i, e, i;
+		_ref = elem;
+		_i = 0;
+		while (_i < _ref.length) {
+			e = ((_i < 0 || _i >= _ref.length) ? go$throwRuntimeError("index out of range") : _ref.array[_ref.offset + _i]);
+			i = _i;
+			if (!(e === "")) {
+				return Clean(strings.Join(go$subslice(elem, i), "/"));
+			}
+			_i++;
+		}
+		return "";
+	};
+	IsAbs = go$pkg.IsAbs = function(path) {
+		return strings.HasPrefix(path, "/");
+	};
+	volumeNameLen = function(path) {
+		return 0;
+	};
+	go$pkg.init = function() {
+		(go$ptrType(lazybuf)).methods = [["append", "append", "path/filepath", [Go$Uint8], [], false, -1], ["index", "index", "path/filepath", [Go$Int], [Go$Uint8], false, -1], ["string", "string", "path/filepath", [], [Go$String], false, -1]];
+		lazybuf.init([["path", "path", "path/filepath", Go$String, ""], ["buf", "buf", "path/filepath", (go$sliceType(Go$Uint8)), ""], ["w", "w", "path/filepath", Go$Int, ""], ["volAndPath", "volAndPath", "path/filepath", Go$String, ""], ["volLen", "volLen", "path/filepath", Go$Int, ""]]);
+		go$pkg.ErrBadPattern = errors.New("syntax error in pattern");
+		go$pkg.SkipDir = errors.New("skip this directory");
+	}
+	return go$pkg;
+})();
+go$packages["github.com/h8liu/c8/c8go/fs"] = (function() {
+	var go$pkg = {}, bytes = go$packages["bytes"], filepath = go$packages["path/filepath"], strings = go$packages["strings"], Dir, File, FileSys, Node, NewDir, NewFile, NewFileSys;
+	Dir = go$pkg.Dir = go$newType(0, "Struct", "fs.Dir", "Dir", "github.com/h8liu/c8/c8go/fs", function(perm_, subs_) {
+		this.go$val = this;
+		this.perm = perm_ !== undefined ? perm_ : 0;
+		this.subs = subs_ !== undefined ? subs_ : false;
+	});
+	File = go$pkg.File = go$newType(0, "Struct", "fs.File", "File", "github.com/h8liu/c8/c8go/fs", function(perm_, Buffer_) {
+		this.go$val = this;
+		this.perm = perm_ !== undefined ? perm_ : 0;
+		this.Buffer = Buffer_ !== undefined ? Buffer_ : (go$ptrType(bytes.Buffer)).nil;
+	});
+	FileSys = go$pkg.FileSys = go$newType(0, "Struct", "fs.FileSys", "FileSys", "github.com/h8liu/c8/c8go/fs", function(root_) {
+		this.go$val = this;
+		this.root = root_ !== undefined ? root_ : (go$ptrType(Dir)).nil;
+	});
+	Node = go$pkg.Node = go$newType(8, "Interface", "fs.Node", "Node", "github.com/h8liu/c8/c8go/fs", null);
+	NewDir = go$pkg.NewDir = function(perm) {
+		var ret;
+		ret = new Dir.Ptr();
+		ret.perm = perm;
+		ret.subs = new Go$Map();
+		return ret;
+	};
+	Dir.Ptr.prototype.Perm = function() {
+		var d;
+		d = this;
+		return d.perm;
+	};
+	Dir.prototype.Perm = function() { return this.go$val.Perm(); };
+	Dir.Ptr.prototype.Set = function(name, node) {
+		var d, _key;
+		d = this;
+		_key = name; (d.subs || go$throwRuntimeError("assignment to entry in nil map"))[_key] = { k: _key, v: node };
+	};
+	Dir.prototype.Set = function(name, node) { return this.go$val.Set(name, node); };
+	Dir.Ptr.prototype.Get = function(name) {
+		var d, _entry;
+		d = this;
+		return (_entry = d.subs[name], _entry !== undefined ? _entry.v : null);
+	};
+	Dir.prototype.Get = function(name) { return this.go$val.Get(name); };
+	Dir.Ptr.prototype.Has = function(name) {
+		var d, _entry;
+		d = this;
+		return go$interfaceIsEqual((_entry = d.subs[name], _entry !== undefined ? _entry.v : null), null);
+	};
+	Dir.prototype.Has = function(name) { return this.go$val.Has(name); };
+	Dir.Ptr.prototype.List = function() {
+		var d, ret, _ref, _i, _keys, _entry, k;
+		d = this;
+		ret = (go$sliceType(Go$String)).make(0, go$keys(d.subs).length, function() { return ""; });
+		_ref = d.subs;
+		_i = 0;
+		_keys = go$keys(_ref);
+		while (_i < _keys.length) {
+			_entry = _ref[_keys[_i]];
+			k = _entry.k;
+			ret = go$append(ret, k);
+			_i++;
+		}
+		return ret;
+	};
+	Dir.prototype.List = function() { return this.go$val.List(); };
+	NewFile = go$pkg.NewFile = function(perm) {
+		var ret;
+		ret = new File.Ptr();
+		ret.perm = perm;
+		ret.Buffer = new bytes.Buffer.Ptr();
+		return ret;
+	};
+	File.Ptr.prototype.Perm = function() {
+		var f;
+		f = this;
+		return f.perm;
+	};
+	File.prototype.Perm = function() { return this.go$val.Perm(); };
+	NewFileSys = go$pkg.NewFileSys = function() {
+		var ret;
+		ret = new FileSys.Ptr();
+		ret.root = NewDir(0);
+		ret.buildSample();
+		return ret;
+	};
+	FileSys.Ptr.prototype.buildSample = function() {
+		var fs, root, d, home;
+		fs = this;
+		root = fs.root;
+		d = NewDir(0);
+		d.Set("ls", NewFile(0));
+		d.Set("mkdir", NewFile(0));
+		d.Set("rm", NewFile(0));
+		root.Set("bin", d);
+		d = NewDir(0);
+		d.Set("README", NewFile(0));
+		home = NewDir(0);
+		home.Set("h8liu", d);
+		root.Set("home", home);
+	};
+	FileSys.prototype.buildSample = function() { return this.go$val.buildSample(); };
+	FileSys.Ptr.prototype.Get = function(path) {
+		var fs, parts, x, node, _ref, _i, p, _tuple, d, isDir;
+		fs = this;
+		if (!filepath.IsAbs(path)) {
+			throw go$panic(new Go$String("has to be absolute path"));
+		}
+		parts = strings.Split(path, "/");
+		if (!(((0 < 0 || 0 >= parts.length) ? go$throwRuntimeError("index out of range") : parts.array[parts.offset + 0]) === "")) {
+			throw go$panic(new Go$String("bug"));
+		}
+		parts = go$subslice(parts, 1);
+		if ((x = parts.length - 1 >> 0, ((x < 0 || x >= parts.length) ? go$throwRuntimeError("index out of range") : parts.array[parts.offset + x])) === "") {
+			parts = go$subslice(parts, 0, (parts.length - 1 >> 0));
+		}
+		node = fs.root;
+		_ref = parts;
+		_i = 0;
+		while (_i < _ref.length) {
+			p = ((_i < 0 || _i >= _ref.length) ? go$throwRuntimeError("index out of range") : _ref.array[_ref.offset + _i]);
+			if (p === "") {
+				_i++;
+				continue;
+			}
+			_tuple = (node !== null && node.constructor === (go$ptrType(Dir)) ? [node.go$val, true] : [(go$ptrType(Dir)).nil, false]); d = _tuple[0]; isDir = _tuple[1];
+			if (!isDir) {
+				return null;
+			}
+			node = d.Get(p);
+			if (go$interfaceIsEqual(node, null)) {
+				return null;
+			}
+			_i++;
+		}
+		return node;
+	};
+	FileSys.prototype.Get = function(path) { return this.go$val.Get(path); };
+	go$pkg.init = function() {
+		(go$ptrType(Dir)).methods = [["Get", "Get", "", [Go$String], [Node], false, -1], ["Has", "Has", "", [Go$String], [Go$Bool], false, -1], ["List", "List", "", [], [(go$sliceType(Go$String))], false, -1], ["Perm", "Perm", "", [], [Go$Uint32], false, -1], ["Set", "Set", "", [Go$String, Node], [], false, -1]];
+		Dir.init([["perm", "perm", "github.com/h8liu/c8/c8go/fs", Go$Uint32, ""], ["subs", "subs", "github.com/h8liu/c8/c8go/fs", (go$mapType(Go$String, Node)), ""]]);
+		File.methods = [["Bytes", "Bytes", "", [], [(go$sliceType(Go$Uint8))], false, 1], ["Grow", "Grow", "", [Go$Int], [], false, 1], ["Len", "Len", "", [], [Go$Int], false, 1], ["Next", "Next", "", [Go$Int], [(go$sliceType(Go$Uint8))], false, 1], ["Read", "Read", "", [(go$sliceType(Go$Uint8))], [Go$Int, go$error], false, 1], ["ReadByte", "ReadByte", "", [], [Go$Uint8, go$error], false, 1], ["ReadBytes", "ReadBytes", "", [Go$Uint8], [(go$sliceType(Go$Uint8)), go$error], false, 1], ["ReadFrom", "ReadFrom", "", [go$packages["io"].Reader], [Go$Int64, go$error], false, 1], ["ReadRune", "ReadRune", "", [], [Go$Int32, Go$Int, go$error], false, 1], ["ReadString", "ReadString", "", [Go$Uint8], [Go$String, go$error], false, 1], ["Reset", "Reset", "", [], [], false, 1], ["String", "String", "", [], [Go$String], false, 1], ["Truncate", "Truncate", "", [Go$Int], [], false, 1], ["UnreadByte", "UnreadByte", "", [], [go$error], false, 1], ["UnreadRune", "UnreadRune", "", [], [go$error], false, 1], ["Write", "Write", "", [(go$sliceType(Go$Uint8))], [Go$Int, go$error], false, 1], ["WriteByte", "WriteByte", "", [Go$Uint8], [go$error], false, 1], ["WriteRune", "WriteRune", "", [Go$Int32], [Go$Int, go$error], false, 1], ["WriteString", "WriteString", "", [Go$String], [Go$Int, go$error], false, 1], ["WriteTo", "WriteTo", "", [go$packages["io"].Writer], [Go$Int64, go$error], false, 1], ["grow", "grow", "bytes", [Go$Int], [Go$Int], false, 1], ["readSlice", "readSlice", "bytes", [Go$Uint8], [(go$sliceType(Go$Uint8)), go$error], false, 1]];
+		(go$ptrType(File)).methods = [["Bytes", "Bytes", "", [], [(go$sliceType(Go$Uint8))], false, 1], ["Grow", "Grow", "", [Go$Int], [], false, 1], ["Len", "Len", "", [], [Go$Int], false, 1], ["Next", "Next", "", [Go$Int], [(go$sliceType(Go$Uint8))], false, 1], ["Perm", "Perm", "", [], [Go$Uint32], false, -1], ["Read", "Read", "", [(go$sliceType(Go$Uint8))], [Go$Int, go$error], false, 1], ["ReadByte", "ReadByte", "", [], [Go$Uint8, go$error], false, 1], ["ReadBytes", "ReadBytes", "", [Go$Uint8], [(go$sliceType(Go$Uint8)), go$error], false, 1], ["ReadFrom", "ReadFrom", "", [go$packages["io"].Reader], [Go$Int64, go$error], false, 1], ["ReadRune", "ReadRune", "", [], [Go$Int32, Go$Int, go$error], false, 1], ["ReadString", "ReadString", "", [Go$Uint8], [Go$String, go$error], false, 1], ["Reset", "Reset", "", [], [], false, 1], ["String", "String", "", [], [Go$String], false, 1], ["Truncate", "Truncate", "", [Go$Int], [], false, 1], ["UnreadByte", "UnreadByte", "", [], [go$error], false, 1], ["UnreadRune", "UnreadRune", "", [], [go$error], false, 1], ["Write", "Write", "", [(go$sliceType(Go$Uint8))], [Go$Int, go$error], false, 1], ["WriteByte", "WriteByte", "", [Go$Uint8], [go$error], false, 1], ["WriteRune", "WriteRune", "", [Go$Int32], [Go$Int, go$error], false, 1], ["WriteString", "WriteString", "", [Go$String], [Go$Int, go$error], false, 1], ["WriteTo", "WriteTo", "", [go$packages["io"].Writer], [Go$Int64, go$error], false, 1], ["grow", "grow", "bytes", [Go$Int], [Go$Int], false, 1], ["readSlice", "readSlice", "bytes", [Go$Uint8], [(go$sliceType(Go$Uint8)), go$error], false, 1]];
+		File.init([["perm", "perm", "github.com/h8liu/c8/c8go/fs", Go$Uint32, ""], ["Buffer", "", "", (go$ptrType(bytes.Buffer)), ""]]);
+		(go$ptrType(FileSys)).methods = [["Get", "Get", "", [Go$String], [Node], false, -1], ["buildSample", "buildSample", "github.com/h8liu/c8/c8go/fs", [], [], false, -1]];
+		FileSys.init([["root", "root", "github.com/h8liu/c8/c8go/fs", (go$ptrType(Dir)), ""]]);
+		Node.init([["Perm", "", (go$funcType([], [Go$Uint32], false))]]);
+	}
+	return go$pkg;
+})();
 go$packages["github.com/h8liu/c8/c8go/shell"] = (function() {
-	var go$pkg = {}, fmt = go$packages["fmt"], io = go$packages["io"], notImpl, System, ls, mkdir, rm, cp, cd, mv, cat, echo, help, builtin;
+	var go$pkg = {}, fmt = go$packages["fmt"], io = go$packages["io"], filepath = go$packages["path/filepath"], fs = go$packages["github.com/h8liu/c8/c8go/fs"], cd, ls, mkdir, notImpl, pwd, System, rm, cp, mv, cat, echo, help, fileSys, builtin;
+	cd = function(args, out) {
+		var rel, pwd$1, node, _tuple, isDir;
+		if (args.length >= 3) {
+			fmt.Fprintln(out, new (go$sliceType(go$emptyInterface))([new Go$String("cd taks at most one arg")]));
+			return -1;
+		}
+		if (args.length <= 1) {
+			go$pkg.Pwd = "/";
+			return 0;
+		}
+		rel = ((1 < 0 || 1 >= args.length) ? go$throwRuntimeError("index out of range") : args.array[args.offset + 1]);
+		pwd$1 = filepath.Join(new (go$sliceType(Go$String))([go$pkg.Pwd, rel]));
+		node = fileSys.Get(pwd$1);
+		if (go$interfaceIsEqual(node, null)) {
+			fmt.Fprintln(out, new (go$sliceType(go$emptyInterface))([new Go$String("directory not found")]));
+			return -1;
+		}
+		_tuple = (node !== null && node.constructor === (go$ptrType(fs.Dir)) ? [node.go$val, true] : [(go$ptrType(fs.Dir)).nil, false]); isDir = _tuple[1];
+		if (!isDir) {
+			fmt.Fprintln(out, new (go$sliceType(go$emptyInterface))([new Go$String("target is not a directory")]));
+			return -1;
+		}
+		go$pkg.Pwd = pwd$1;
+		return 0;
+	};
+	ls = function(args, out) {
+		var node, _tuple, dir, okay, lst, _ref, _i, p, i;
+		if (!((args.length === 1))) {
+			fmt.Fprintf(out, "ls with args not implemented yet\n", new (go$sliceType(go$emptyInterface))([]));
+			return -1;
+		}
+		node = fileSys.Get(go$pkg.Pwd);
+		_tuple = (node !== null && node.constructor === (go$ptrType(fs.Dir)) ? [node.go$val, true] : [(go$ptrType(fs.Dir)).nil, false]); dir = _tuple[0]; okay = _tuple[1];
+		if (!okay) {
+			fmt.Fprintf(out, "error: current working directory does not exist\n", new (go$sliceType(go$emptyInterface))([]));
+			return -1;
+		}
+		lst = dir.List();
+		_ref = lst;
+		_i = 0;
+		while (_i < _ref.length) {
+			p = ((_i < 0 || _i >= _ref.length) ? go$throwRuntimeError("index out of range") : _ref.array[_ref.offset + _i]);
+			i = _i;
+			if (i > 0) {
+				fmt.Fprint(out, new (go$sliceType(go$emptyInterface))([new Go$String(" ")]));
+			}
+			fmt.Fprint(out, new (go$sliceType(go$emptyInterface))([new Go$String(p)]));
+			_i++;
+		}
+		fmt.Fprintln(out, new (go$sliceType(go$emptyInterface))([]));
+		return 0;
+	};
+	mkdir = function(args, out) {
+		var node, _tuple, dir, okay, name, newDir;
+		if (!((args.length === 2))) {
+			fmt.Fprintf(out, "mkdir needs an arg\n", new (go$sliceType(go$emptyInterface))([]));
+			return -1;
+		}
+		node = fileSys.Get(go$pkg.Pwd);
+		_tuple = (node !== null && node.constructor === (go$ptrType(fs.Dir)) ? [node.go$val, true] : [(go$ptrType(fs.Dir)).nil, false]); dir = _tuple[0]; okay = _tuple[1];
+		if (!okay) {
+			fmt.Fprintf(out, "error: current working directory does not exist\n", new (go$sliceType(go$emptyInterface))([]));
+			return -1;
+		}
+		name = ((1 < 0 || 1 >= args.length) ? go$throwRuntimeError("index out of range") : args.array[args.offset + 1]);
+		if (!(go$interfaceIsEqual(dir.Get(((1 < 0 || 1 >= args.length) ? go$throwRuntimeError("index out of range") : args.array[args.offset + 1])), null))) {
+			fmt.Fprintf(out, "%q already exists\n", new (go$sliceType(go$emptyInterface))([new Go$String(name)]));
+			return -1;
+		}
+		newDir = fs.NewDir(0);
+		dir.Set(name, newDir);
+		return 0;
+	};
 	notImpl = function(args, out) {
 		var cmd;
 		cmd = ((0 < 0 || 0 >= args.length) ? go$throwRuntimeError("index out of range") : args.array[args.offset + 0]);
-		fmt.Fprintf(out, "command %q not implemented yet", new (go$sliceType(go$emptyInterface))([new Go$String(cmd)]));
+		fmt.Fprintf(out, "command %q not implemented yet\n", new (go$sliceType(go$emptyInterface))([new Go$String(cmd)]));
 		return -1;
+	};
+	pwd = function(args, out) {
+		fmt.Fprintln(out, new (go$sliceType(go$emptyInterface))([new Go$String(go$pkg.Pwd)]));
+		return 0;
 	};
 	System = go$pkg.System = function(args, out) {
 		var cmd, _entry, entry;
@@ -12291,23 +12942,22 @@ go$packages["github.com/h8liu/c8/c8go/shell"] = (function() {
 		cmd = ((0 < 0 || 0 >= args.length) ? go$throwRuntimeError("index out of range") : args.array[args.offset + 0]);
 		entry = (_entry = builtin[cmd], _entry !== undefined ? _entry.v : go$throwNilPointerError);
 		if (entry === go$throwNilPointerError) {
-			fmt.Fprintf(out, "command %q not found", new (go$sliceType(go$emptyInterface))([new Go$String(cmd)]));
+			fmt.Fprintf(out, "command %q not found\n", new (go$sliceType(go$emptyInterface))([new Go$String(cmd)]));
 			return -1;
 		}
 		return entry(args, out);
 	};
 	go$pkg.init = function() {
-		ls = notImpl;
-		mkdir = notImpl;
 		rm = notImpl;
 		cp = notImpl;
-		cd = notImpl;
 		mv = notImpl;
 		cat = notImpl;
 		echo = notImpl;
 		help = notImpl;
+		go$pkg.Pwd = "/";
+		fileSys = fs.NewFileSys();
 		var _map, _key;
-		builtin = (_map = new Go$Map(), _key = "ls", _map[_key] = { k: _key, v: ls }, _key = "mkdir", _map[_key] = { k: _key, v: mkdir }, _key = "rm", _map[_key] = { k: _key, v: rm }, _key = "cp", _map[_key] = { k: _key, v: cp }, _key = "cd", _map[_key] = { k: _key, v: cd }, _key = "mv", _map[_key] = { k: _key, v: mv }, _key = "cat", _map[_key] = { k: _key, v: cat }, _key = "echo", _map[_key] = { k: _key, v: echo }, _key = "help", _map[_key] = { k: _key, v: help }, _map);
+		builtin = (_map = new Go$Map(), _key = "ls", _map[_key] = { k: _key, v: ls }, _key = "pwd", _map[_key] = { k: _key, v: pwd }, _key = "mkdir", _map[_key] = { k: _key, v: mkdir }, _key = "rm", _map[_key] = { k: _key, v: rm }, _key = "cp", _map[_key] = { k: _key, v: cp }, _key = "cd", _map[_key] = { k: _key, v: cd }, _key = "mv", _map[_key] = { k: _key, v: mv }, _key = "cat", _map[_key] = { k: _key, v: cat }, _key = "echo", _map[_key] = { k: _key, v: echo }, _key = "help", _map[_key] = { k: _key, v: help }, _map);
 	}
 	return go$pkg;
 })();
@@ -12370,58 +13020,8 @@ go$packages["github.com/h8liu/c8/c8go/writer"] = (function() {
 	}
 	return go$pkg;
 })();
-go$packages["strings"] = (function() {
-	var go$pkg = {}, js = go$packages["github.com/gopherjs/gopherjs/js"], errors = go$packages["errors"], io = go$packages["io"], utf8 = go$packages["unicode/utf8"], unicode = go$packages["unicode"], Fields, FieldsFunc;
-	Fields = go$pkg.Fields = function(s) {
-		return FieldsFunc(s, unicode.IsSpace);
-	};
-	FieldsFunc = go$pkg.FieldsFunc = function(s, f) {
-		var n, inField, _ref, _i, _rune, rune, wasInField, a, na, fieldStart, _ref$1, _i$1, _rune$1, rune$1, i;
-		n = 0;
-		inField = false;
-		_ref = s;
-		_i = 0;
-		while (_i < _ref.length) {
-			_rune = go$decodeRune(_ref, _i);
-			rune = _rune[0];
-			wasInField = inField;
-			inField = !f(rune);
-			if (inField && !wasInField) {
-				n = n + 1 >> 0;
-			}
-			_i += _rune[1];
-		}
-		a = (go$sliceType(Go$String)).make(n, 0, function() { return ""; });
-		na = 0;
-		fieldStart = -1;
-		_ref$1 = s;
-		_i$1 = 0;
-		while (_i$1 < _ref$1.length) {
-			_rune$1 = go$decodeRune(_ref$1, _i$1);
-			rune$1 = _rune$1[0];
-			i = _i$1;
-			if (f(rune$1)) {
-				if (fieldStart >= 0) {
-					(na < 0 || na >= a.length) ? go$throwRuntimeError("index out of range") : a.array[a.offset + na] = s.substring(fieldStart, i);
-					na = na + 1 >> 0;
-					fieldStart = -1;
-				}
-			} else if (fieldStart === -1) {
-				fieldStart = i;
-			}
-			_i$1 += _rune$1[1];
-		}
-		if (fieldStart >= 0) {
-			(na < 0 || na >= a.length) ? go$throwRuntimeError("index out of range") : a.array[a.offset + na] = s.substring(fieldStart);
-		}
-		return a;
-	};
-	go$pkg.init = function() {
-	}
-	return go$pkg;
-})();
 go$packages["/Users/h8liu/gopath/src/github.com/h8liu/c8/c8go"] = (function() {
-	var go$pkg = {}, fmt = go$packages["fmt"], js = go$packages["github.com/gopherjs/gopherjs/js"], strings = go$packages["strings"], shell = go$packages["github.com/h8liu/c8/c8go/shell"], writer = go$packages["github.com/h8liu/c8/c8go/writer"], main, Launch;
+	var go$pkg = {}, fmt = go$packages["fmt"], js = go$packages["github.com/gopherjs/gopherjs/js"], strings = go$packages["strings"], shell = go$packages["github.com/h8liu/c8/c8go/shell"], writer = go$packages["github.com/h8liu/c8/c8go/writer"], main, Launch, Pwd;
 	main = go$pkg.main = function() {
 		var global, _map, _key;
 		global = go$global;
@@ -12429,13 +13029,17 @@ go$packages["/Users/h8liu/gopath/src/github.com/h8liu/c8/c8go"] = (function() {
 			fmt.Println(new (go$sliceType(go$emptyInterface))([new Go$String("not intended to run in a real OS")]));
 			return;
 		}
-		go$global.c8go = go$externalize((_map = new Go$Map(), _key = "launch", _map[_key] = { k: _key, v: new (go$funcType([Go$String, js.Object], [], false))(Launch) }, _map), (go$mapType(Go$String, go$emptyInterface)));
+		go$global.c8go = go$externalize((_map = new Go$Map(), _key = "launch", _map[_key] = { k: _key, v: new (go$funcType([Go$String, js.Object], [Go$Int], false))(Launch) }, _key = "pwd", _map[_key] = { k: _key, v: new (go$funcType([], [Go$String], false))(Pwd) }, _map), (go$mapType(Go$String, go$emptyInterface)));
 	};
 	Launch = go$pkg.Launch = function(s, out) {
-		var w;
+		var w, ret;
 		w = writer.New(out);
-		shell.System(strings.Fields(s), w);
+		ret = shell.System(strings.Fields(s), w);
 		w.Close();
+		return ret;
+	};
+	Pwd = go$pkg.Pwd = function() {
+		return shell.Pwd;
 	};
 	go$pkg.init = function() {
 	}
@@ -12444,16 +13048,17 @@ go$packages["/Users/h8liu/gopath/src/github.com/h8liu/c8/c8go"] = (function() {
 go$error.implementedBy = [go$packages["errors"].errorString.Ptr, go$packages["github.com/gopherjs/gopherjs/js"].Error.Ptr, go$packages["os"].PathError.Ptr, go$packages["os"].SyscallError.Ptr, go$packages["reflect"].ValueError.Ptr, go$packages["runtime"].TypeAssertionError.Ptr, go$packages["runtime"].errorString, go$packages["syscall"].Errno, go$packages["time"].ParseError.Ptr, go$ptrType(go$packages["runtime"].errorString), go$ptrType(go$packages["syscall"].Errno)];
 go$packages["github.com/gopherjs/gopherjs/js"].Object.implementedBy = [go$packages["github.com/gopherjs/gopherjs/js"].Error, go$packages["github.com/gopherjs/gopherjs/js"].Error.Ptr];
 go$packages["sync"].Locker.implementedBy = [go$packages["sync"].Mutex.Ptr, go$packages["sync"].RWMutex.Ptr, go$packages["sync"].rlocker.Ptr, go$packages["syscall"].mmapper.Ptr];
-go$packages["io"].Reader.implementedBy = [go$packages["bytes"].Buffer.Ptr, go$packages["fmt"].ss.Ptr, go$packages["os"].File.Ptr];
-go$packages["io"].RuneReader.implementedBy = [go$packages["bytes"].Buffer.Ptr, go$packages["fmt"].ss.Ptr];
-go$packages["io"].Writer.implementedBy = [go$packages["bytes"].Buffer.Ptr, go$packages["fmt"].pp.Ptr, go$packages["github.com/h8liu/c8/c8go/writer"].Writer.Ptr, go$packages["os"].File.Ptr, go$ptrType(go$packages["fmt"].buffer)];
+go$packages["io"].Reader.implementedBy = [go$packages["bytes"].Buffer.Ptr, go$packages["fmt"].ss.Ptr, go$packages["github.com/h8liu/c8/c8go/fs"].File, go$packages["github.com/h8liu/c8/c8go/fs"].File.Ptr, go$packages["os"].File.Ptr];
+go$packages["io"].RuneReader.implementedBy = [go$packages["bytes"].Buffer.Ptr, go$packages["fmt"].ss.Ptr, go$packages["github.com/h8liu/c8/c8go/fs"].File, go$packages["github.com/h8liu/c8/c8go/fs"].File.Ptr];
+go$packages["io"].Writer.implementedBy = [go$packages["bytes"].Buffer.Ptr, go$packages["fmt"].pp.Ptr, go$packages["github.com/h8liu/c8/c8go/fs"].File, go$packages["github.com/h8liu/c8/c8go/fs"].File.Ptr, go$packages["github.com/h8liu/c8/c8go/writer"].Writer.Ptr, go$packages["os"].File.Ptr, go$ptrType(go$packages["fmt"].buffer)];
 go$packages["os"].FileInfo.implementedBy = [go$packages["os"].fileStat.Ptr];
 go$packages["reflect"].Type.implementedBy = [go$packages["reflect"].arrayType.Ptr, go$packages["reflect"].chanType.Ptr, go$packages["reflect"].funcType.Ptr, go$packages["reflect"].interfaceType.Ptr, go$packages["reflect"].mapType.Ptr, go$packages["reflect"].ptrType.Ptr, go$packages["reflect"].rtype.Ptr, go$packages["reflect"].sliceType.Ptr, go$packages["reflect"].structType.Ptr];
 go$packages["fmt"].Formatter.implementedBy = [];
 go$packages["fmt"].GoStringer.implementedBy = [];
 go$packages["fmt"].State.implementedBy = [go$packages["fmt"].pp.Ptr];
-go$packages["fmt"].Stringer.implementedBy = [go$packages["bytes"].Buffer.Ptr, go$packages["os"].FileMode, go$packages["reflect"].ChanDir, go$packages["reflect"].Kind, go$packages["reflect"].Value, go$packages["reflect"].Value.Ptr, go$packages["reflect"].arrayType.Ptr, go$packages["reflect"].chanType.Ptr, go$packages["reflect"].funcType.Ptr, go$packages["reflect"].interfaceType.Ptr, go$packages["reflect"].mapType.Ptr, go$packages["reflect"].ptrType.Ptr, go$packages["reflect"].rtype.Ptr, go$packages["reflect"].sliceType.Ptr, go$packages["reflect"].structType.Ptr, go$packages["strconv"].decimal.Ptr, go$packages["time"].Duration, go$packages["time"].Location.Ptr, go$packages["time"].Month, go$packages["time"].Time, go$packages["time"].Time.Ptr, go$packages["time"].Weekday, go$ptrType(go$packages["os"].FileMode), go$ptrType(go$packages["reflect"].ChanDir), go$ptrType(go$packages["reflect"].Kind), go$ptrType(go$packages["time"].Duration), go$ptrType(go$packages["time"].Month), go$ptrType(go$packages["time"].Weekday)];
-go$packages["fmt"].runeUnreader.implementedBy = [go$packages["bytes"].Buffer.Ptr, go$packages["fmt"].ss.Ptr];
+go$packages["fmt"].Stringer.implementedBy = [go$packages["bytes"].Buffer.Ptr, go$packages["github.com/h8liu/c8/c8go/fs"].File, go$packages["github.com/h8liu/c8/c8go/fs"].File.Ptr, go$packages["os"].FileMode, go$packages["reflect"].ChanDir, go$packages["reflect"].Kind, go$packages["reflect"].Value, go$packages["reflect"].Value.Ptr, go$packages["reflect"].arrayType.Ptr, go$packages["reflect"].chanType.Ptr, go$packages["reflect"].funcType.Ptr, go$packages["reflect"].interfaceType.Ptr, go$packages["reflect"].mapType.Ptr, go$packages["reflect"].ptrType.Ptr, go$packages["reflect"].rtype.Ptr, go$packages["reflect"].sliceType.Ptr, go$packages["reflect"].structType.Ptr, go$packages["strconv"].decimal.Ptr, go$packages["time"].Duration, go$packages["time"].Location.Ptr, go$packages["time"].Month, go$packages["time"].Time, go$packages["time"].Time.Ptr, go$packages["time"].Weekday, go$ptrType(go$packages["os"].FileMode), go$ptrType(go$packages["reflect"].ChanDir), go$ptrType(go$packages["reflect"].Kind), go$ptrType(go$packages["time"].Duration), go$ptrType(go$packages["time"].Month), go$ptrType(go$packages["time"].Weekday)];
+go$packages["fmt"].runeUnreader.implementedBy = [go$packages["bytes"].Buffer.Ptr, go$packages["fmt"].ss.Ptr, go$packages["github.com/h8liu/c8/c8go/fs"].File, go$packages["github.com/h8liu/c8/c8go/fs"].File.Ptr];
+go$packages["github.com/h8liu/c8/c8go/fs"].Node.implementedBy = [go$packages["github.com/h8liu/c8/c8go/fs"].Dir.Ptr, go$packages["github.com/h8liu/c8/c8go/fs"].File.Ptr];
 go$packages["github.com/gopherjs/gopherjs/js"].init();
 go$packages["runtime"].init();
 go$packages["errors"].init();
@@ -12470,9 +13075,12 @@ go$packages["os"].init();
 go$packages["strconv"].init();
 go$packages["reflect"].init();
 go$packages["fmt"].init();
+go$packages["sort"].init();
+go$packages["strings"].init();
+go$packages["path/filepath"].init();
+go$packages["github.com/h8liu/c8/c8go/fs"].init();
 go$packages["github.com/h8liu/c8/c8go/shell"].init();
 go$packages["github.com/h8liu/c8/c8go/writer"].init();
-go$packages["strings"].init();
 go$packages["/Users/h8liu/gopath/src/github.com/h8liu/c8/c8go"].init();
 go$packages["/Users/h8liu/gopath/src/github.com/h8liu/c8/c8go"].main();
 
