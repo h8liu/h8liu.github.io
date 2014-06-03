@@ -2581,7 +2581,7 @@ $packages["bytes"] = (function() {
 	return $pkg;
 })();
 $packages["syscall"] = (function() {
-	var $pkg = {}, bytes = $packages["bytes"], js = $packages["github.com/gopherjs/gopherjs/js"], sync = $packages["sync"], runtime = $packages["runtime"], mmapper, Errno, Timespec, Stat_t, Dirent, printWarning, printToConsole, syscall, Syscall, Syscall6, BytePtrFromString, copyenv, Getenv, itoa, Open, clen, ReadDirent, ParseDirent, Read, Write, open, Close, Fchdir, Fchmod, Fsync, Getdents, read, write, munmap, Fchown, Fstat, Ftruncate, Lstat, Pread, Pwrite, Seek, mmap, warningPrinted, lineBuffer, syscallModule, alreadyTriedToLoad, minusOne, envOnce, envLock, env, envs, mapper, errors;
+	var $pkg = {}, bytes = $packages["bytes"], js = $packages["github.com/gopherjs/gopherjs/js"], sync = $packages["sync"], runtime = $packages["runtime"], errors$1 = $packages["errors"], mmapper, Errno, Timespec, Stat_t, Dirent, printWarning, printToConsole, syscall, Syscall, Syscall6, BytePtrFromString, copyenv, Getenv, itoa, ReadDirent, ParseDirent, Read, Write, Close, Fchdir, Fchmod, Fchown, Fstat, Fsync, Ftruncate, Getdirentries, Lstat, Open, Pread, Pwrite, read, Seek, write, mmap, munmap, warningPrinted, lineBuffer, syscallModule, alreadyTriedToLoad, minusOne, envOnce, envLock, env, envs, mapper, errors;
 	mmapper = $pkg.mmapper = $newType(0, "Struct", "syscall.mmapper", "mmapper", "syscall", function(Mutex_, active_, mmap_, munmap_) {
 		this.$val = this;
 		this.Mutex = Mutex_ !== undefined ? Mutex_ : new sync.Mutex.Ptr();
@@ -2595,32 +2595,37 @@ $packages["syscall"] = (function() {
 		this.Sec = Sec_ !== undefined ? Sec_ : new $Int64(0, 0);
 		this.Nsec = Nsec_ !== undefined ? Nsec_ : new $Int64(0, 0);
 	});
-	Stat_t = $pkg.Stat_t = $newType(0, "Struct", "syscall.Stat_t", "Stat_t", "syscall", function(Dev_, Ino_, Nlink_, Mode_, Uid_, Gid_, X__pad0_, Rdev_, Size_, Blksize_, Blocks_, Atim_, Mtim_, Ctim_, X__unused_) {
+	Stat_t = $pkg.Stat_t = $newType(0, "Struct", "syscall.Stat_t", "Stat_t", "syscall", function(Dev_, Mode_, Nlink_, Ino_, Uid_, Gid_, Rdev_, Pad_cgo_0_, Atimespec_, Mtimespec_, Ctimespec_, Birthtimespec_, Size_, Blocks_, Blksize_, Flags_, Gen_, Lspare_, Qspare_) {
 		this.$val = this;
-		this.Dev = Dev_ !== undefined ? Dev_ : new $Uint64(0, 0);
-		this.Ino = Ino_ !== undefined ? Ino_ : new $Uint64(0, 0);
-		this.Nlink = Nlink_ !== undefined ? Nlink_ : new $Uint64(0, 0);
+		this.Dev = Dev_ !== undefined ? Dev_ : 0;
 		this.Mode = Mode_ !== undefined ? Mode_ : 0;
+		this.Nlink = Nlink_ !== undefined ? Nlink_ : 0;
+		this.Ino = Ino_ !== undefined ? Ino_ : new $Uint64(0, 0);
 		this.Uid = Uid_ !== undefined ? Uid_ : 0;
 		this.Gid = Gid_ !== undefined ? Gid_ : 0;
-		this.X__pad0 = X__pad0_ !== undefined ? X__pad0_ : 0;
-		this.Rdev = Rdev_ !== undefined ? Rdev_ : new $Uint64(0, 0);
+		this.Rdev = Rdev_ !== undefined ? Rdev_ : 0;
+		this.Pad_cgo_0 = Pad_cgo_0_ !== undefined ? Pad_cgo_0_ : $makeNativeArray("Uint8", 4, function() { return 0; });
+		this.Atimespec = Atimespec_ !== undefined ? Atimespec_ : new Timespec.Ptr();
+		this.Mtimespec = Mtimespec_ !== undefined ? Mtimespec_ : new Timespec.Ptr();
+		this.Ctimespec = Ctimespec_ !== undefined ? Ctimespec_ : new Timespec.Ptr();
+		this.Birthtimespec = Birthtimespec_ !== undefined ? Birthtimespec_ : new Timespec.Ptr();
 		this.Size = Size_ !== undefined ? Size_ : new $Int64(0, 0);
-		this.Blksize = Blksize_ !== undefined ? Blksize_ : new $Int64(0, 0);
 		this.Blocks = Blocks_ !== undefined ? Blocks_ : new $Int64(0, 0);
-		this.Atim = Atim_ !== undefined ? Atim_ : new Timespec.Ptr();
-		this.Mtim = Mtim_ !== undefined ? Mtim_ : new Timespec.Ptr();
-		this.Ctim = Ctim_ !== undefined ? Ctim_ : new Timespec.Ptr();
-		this.X__unused = X__unused_ !== undefined ? X__unused_ : $makeNativeArray("Int64", 3, function() { return new $Int64(0, 0); });
+		this.Blksize = Blksize_ !== undefined ? Blksize_ : 0;
+		this.Flags = Flags_ !== undefined ? Flags_ : 0;
+		this.Gen = Gen_ !== undefined ? Gen_ : 0;
+		this.Lspare = Lspare_ !== undefined ? Lspare_ : 0;
+		this.Qspare = Qspare_ !== undefined ? Qspare_ : $makeNativeArray("Int64", 2, function() { return new $Int64(0, 0); });
 	});
-	Dirent = $pkg.Dirent = $newType(0, "Struct", "syscall.Dirent", "Dirent", "syscall", function(Ino_, Off_, Reclen_, Type_, Name_, Pad_cgo_0_) {
+	Dirent = $pkg.Dirent = $newType(0, "Struct", "syscall.Dirent", "Dirent", "syscall", function(Ino_, Seekoff_, Reclen_, Namlen_, Type_, Name_, Pad_cgo_0_) {
 		this.$val = this;
 		this.Ino = Ino_ !== undefined ? Ino_ : new $Uint64(0, 0);
-		this.Off = Off_ !== undefined ? Off_ : new $Int64(0, 0);
+		this.Seekoff = Seekoff_ !== undefined ? Seekoff_ : new $Uint64(0, 0);
 		this.Reclen = Reclen_ !== undefined ? Reclen_ : 0;
+		this.Namlen = Namlen_ !== undefined ? Namlen_ : 0;
 		this.Type = Type_ !== undefined ? Type_ : 0;
-		this.Name = Name_ !== undefined ? Name_ : $makeNativeArray("Int8", 256, function() { return 0; });
-		this.Pad_cgo_0 = Pad_cgo_0_ !== undefined ? Pad_cgo_0_ : $makeNativeArray("Uint8", 5, function() { return 0; });
+		this.Name = Name_ !== undefined ? Name_ : $makeNativeArray("Int8", 1024, function() { return 0; });
+		this.Pad_cgo_0 = Pad_cgo_0_ !== undefined ? Pad_cgo_0_ : $makeNativeArray("Uint8", 3, function() { return 0; });
 	});
 	printWarning = function() {
 		if (!warningPrinted) {
@@ -2679,7 +2684,7 @@ $packages["syscall"] = (function() {
 			_tmp = (($parseInt(r[0]) >> 0) >>> 0); _tmp$1 = (($parseInt(r[1]) >> 0) >>> 0); _tmp$2 = (($parseInt(r[2]) >> 0) >>> 0); r1 = _tmp; r2 = _tmp$1; err = _tmp$2;
 			return [r1, r2, err];
 		}
-		if ((trap === 1) && ((a1 === 1) || (a1 === 2))) {
+		if ((trap === 4) && ((a1 === 1) || (a1 === 2))) {
 			b = (x = $internalize(new ($sliceType($Uint8))(a2), $emptyInterface), (x !== null && x.constructor === ($sliceType($Uint8)) ? x.$val : $typeAssertionFailed(x, ($sliceType($Uint8)))));
 			printToConsole(b);
 			_tmp$3 = (b.length >>> 0); _tmp$4 = 0; _tmp$5 = 0; r1 = _tmp$3; r2 = _tmp$4; err = _tmp$5;
@@ -2796,29 +2801,11 @@ $packages["syscall"] = (function() {
 		return (x = $mul64(ts.Sec, new $Int64(0, 1000000000)), x$1 = ts.Nsec, new $Int64(x.high + x$1.high, x.low + x$1.low));
 	};
 	Timespec.prototype.Nano = function() { return this.$val.Nano(); };
-	Open = $pkg.Open = function(path, mode, perm) {
-		var fd, err, _tuple;
-		fd = 0;
-		err = null;
-		_tuple = open(path, mode | 0, perm); fd = _tuple[0]; err = _tuple[1];
-		return [fd, err];
-	};
-	clen = function(n) {
-		var i;
-		i = 0;
-		while (i < n.length) {
-			if (((i < 0 || i >= n.length) ? $throwRuntimeError("index out of range") : n.array[n.offset + i]) === 0) {
-				return i;
-			}
-			i = i + 1 >> 0;
-		}
-		return n.length;
-	};
 	ReadDirent = $pkg.ReadDirent = function(fd, buf) {
 		var n, err, _tuple;
 		n = 0;
 		err = null;
-		_tuple = Getdents(fd, buf); n = _tuple[0]; err = _tuple[1];
+		_tuple = Getdirentries(fd, buf, new Uint8Array(8)); n = _tuple[0]; err = _tuple[1];
 		return [n, err];
 	};
 	ParseDirent = $pkg.ParseDirent = function(buf, max, names) {
@@ -2827,16 +2814,19 @@ $packages["syscall"] = (function() {
 		count = 0;
 		newnames = ($sliceType($String)).nil;
 		origlen = buf.length;
-		count = 0;
 		while (!((max === 0)) && buf.length > 0) {
 			dirent = [undefined];
-			dirent[0] = (_array = $sliceToArray(buf), _struct = new Dirent.Ptr(), _view = new DataView(_array.buffer, _array.byteOffset), _struct.Ino = new $Uint64(_view.getUint32(4, true), _view.getUint32(0, true)), _struct.Off = new $Int64(_view.getUint32(12, true), _view.getUint32(8, true)), _struct.Reclen = _view.getUint16(16, true), _struct.Type = _view.getUint8(18, true), _struct.Name = new ($nativeArray("Int8"))(_array.buffer, $min(_array.byteOffset + 19, _array.buffer.byteLength)), _struct.Pad_cgo_0 = new ($nativeArray("Uint8"))(_array.buffer, $min(_array.byteOffset + 275, _array.buffer.byteLength)), _struct);
+			dirent[0] = (_array = $sliceToArray(buf), _struct = new Dirent.Ptr(), _view = new DataView(_array.buffer, _array.byteOffset), _struct.Ino = new $Uint64(_view.getUint32(4, true), _view.getUint32(0, true)), _struct.Seekoff = new $Uint64(_view.getUint32(12, true), _view.getUint32(8, true)), _struct.Reclen = _view.getUint16(16, true), _struct.Namlen = _view.getUint16(18, true), _struct.Type = _view.getUint8(20, true), _struct.Name = new ($nativeArray("Int8"))(_array.buffer, $min(_array.byteOffset + 21, _array.buffer.byteLength)), _struct.Pad_cgo_0 = new ($nativeArray("Uint8"))(_array.buffer, $min(_array.byteOffset + 1045, _array.buffer.byteLength)), _struct);
+			if (dirent[0].Reclen === 0) {
+				buf = ($sliceType($Uint8)).nil;
+				break;
+			}
 			buf = $subslice(buf, dirent[0].Reclen);
 			if ((x = dirent[0].Ino, (x.high === 0 && x.low === 0))) {
 				continue;
 			}
 			bytes$1 = $sliceToArray(new ($sliceType($Uint8))(dirent[0].Name));
-			name = $bytesToString($subslice(new ($sliceType($Uint8))(bytes$1), 0, clen(new ($sliceType($Uint8))(bytes$1))));
+			name = $bytesToString($subslice(new ($sliceType($Uint8))(bytes$1), 0, dirent[0].Namlen));
 			if (name === "." || name === "..") {
 				continue;
 			}
@@ -2916,7 +2906,7 @@ $packages["syscall"] = (function() {
 	Errno.prototype.Error = function() {
 		var e, s;
 		e = this.$val;
-		if (0 <= (e >> 0) && (e >> 0) < 133) {
+		if (0 <= (e >> 0) && (e >> 0) < 106) {
 			s = errors[e];
 			if (!(s === "")) {
 				return s;
@@ -2934,7 +2924,7 @@ $packages["syscall"] = (function() {
 	Errno.prototype.Timeout = function() {
 		var e;
 		e = this.$val;
-		return (e === 11) || (e === 11) || (e === 110);
+		return (e === 35) || (e === 35) || (e === 60);
 	};
 	$ptrType(Errno).prototype.Timeout = function() { return new Errno(this.$get()).Timeout(); };
 	Read = $pkg.Read = function(fd, p) {
@@ -2951,26 +2941,10 @@ $packages["syscall"] = (function() {
 		_tuple = write(fd, p); n = _tuple[0]; err = _tuple[1];
 		return [n, err];
 	};
-	open = function(path, mode, perm) {
-		var fd, err, _p0, _tuple, _tuple$1, r0, e1;
-		fd = 0;
-		err = null;
-		_p0 = ($ptrType($Uint8)).nil;
-		_tuple = BytePtrFromString(path); _p0 = _tuple[0]; err = _tuple[1];
-		if (!($interfaceIsEqual(err, null))) {
-			return [fd, err];
-		}
-		_tuple$1 = Syscall(2, _p0, (mode >>> 0), (perm >>> 0)); r0 = _tuple$1[0]; e1 = _tuple$1[2];
-		fd = (r0 >> 0);
-		if (!((e1 === 0))) {
-			err = new Errno(e1);
-		}
-		return [fd, err];
-	};
 	Close = $pkg.Close = function(fd) {
 		var err, _tuple, e1;
 		err = null;
-		_tuple = Syscall(3, (fd >>> 0), 0, 0); e1 = _tuple[2];
+		_tuple = Syscall(6, (fd >>> 0), 0, 0); e1 = _tuple[2];
 		if (!((e1 === 0))) {
 			err = new Errno(e1);
 		}
@@ -2979,7 +2953,7 @@ $packages["syscall"] = (function() {
 	Fchdir = $pkg.Fchdir = function(fd) {
 		var err, _tuple, e1;
 		err = null;
-		_tuple = Syscall(81, (fd >>> 0), 0, 0); e1 = _tuple[2];
+		_tuple = Syscall(13, (fd >>> 0), 0, 0); e1 = _tuple[2];
 		if (!((e1 === 0))) {
 			err = new Errno(e1);
 		}
@@ -2988,76 +2962,7 @@ $packages["syscall"] = (function() {
 	Fchmod = $pkg.Fchmod = function(fd, mode) {
 		var err, _tuple, e1;
 		err = null;
-		_tuple = Syscall(91, (fd >>> 0), (mode >>> 0), 0); e1 = _tuple[2];
-		if (!((e1 === 0))) {
-			err = new Errno(e1);
-		}
-		return err;
-	};
-	Fsync = $pkg.Fsync = function(fd) {
-		var err, _tuple, e1;
-		err = null;
-		_tuple = Syscall(74, (fd >>> 0), 0, 0); e1 = _tuple[2];
-		if (!((e1 === 0))) {
-			err = new Errno(e1);
-		}
-		return err;
-	};
-	Getdents = $pkg.Getdents = function(fd, buf) {
-		var n, err, _p0, _tuple, r0, e1;
-		n = 0;
-		err = null;
-		_p0 = 0;
-		if (buf.length > 0) {
-			_p0 = $sliceToArray(buf);
-		} else {
-			_p0 = new Uint8Array(0);
-		}
-		_tuple = Syscall(217, (fd >>> 0), _p0, (buf.length >>> 0)); r0 = _tuple[0]; e1 = _tuple[2];
-		n = (r0 >> 0);
-		if (!((e1 === 0))) {
-			err = new Errno(e1);
-		}
-		return [n, err];
-	};
-	read = function(fd, p) {
-		var n, err, _p0, _tuple, r0, e1;
-		n = 0;
-		err = null;
-		_p0 = 0;
-		if (p.length > 0) {
-			_p0 = $sliceToArray(p);
-		} else {
-			_p0 = new Uint8Array(0);
-		}
-		_tuple = Syscall(0, (fd >>> 0), _p0, (p.length >>> 0)); r0 = _tuple[0]; e1 = _tuple[2];
-		n = (r0 >> 0);
-		if (!((e1 === 0))) {
-			err = new Errno(e1);
-		}
-		return [n, err];
-	};
-	write = function(fd, p) {
-		var n, err, _p0, _tuple, r0, e1;
-		n = 0;
-		err = null;
-		_p0 = 0;
-		if (p.length > 0) {
-			_p0 = $sliceToArray(p);
-		} else {
-			_p0 = new Uint8Array(0);
-		}
-		_tuple = Syscall(1, (fd >>> 0), _p0, (p.length >>> 0)); r0 = _tuple[0]; e1 = _tuple[2];
-		n = (r0 >> 0);
-		if (!((e1 === 0))) {
-			err = new Errno(e1);
-		}
-		return [n, err];
-	};
-	munmap = function(addr, length) {
-		var err, _tuple, e1;
-		err = null;
-		_tuple = Syscall(11, addr, length, 0); e1 = _tuple[2];
+		_tuple = Syscall(124, (fd >>> 0), (mode >>> 0), 0); e1 = _tuple[2];
 		if (!((e1 === 0))) {
 			err = new Errno(e1);
 		}
@@ -3066,7 +2971,7 @@ $packages["syscall"] = (function() {
 	Fchown = $pkg.Fchown = function(fd, uid, gid) {
 		var err, _tuple, e1;
 		err = null;
-		_tuple = Syscall(93, (fd >>> 0), (uid >>> 0), (gid >>> 0)); e1 = _tuple[2];
+		_tuple = Syscall(123, (fd >>> 0), (uid >>> 0), (gid >>> 0)); e1 = _tuple[2];
 		if (!((e1 === 0))) {
 			err = new Errno(e1);
 		}
@@ -3076,8 +2981,17 @@ $packages["syscall"] = (function() {
 		var err, _tuple, _array, _struct, _view, e1;
 		err = null;
 		_array = new Uint8Array(144);
-		_tuple = Syscall(5, (fd >>> 0), _array, 0); e1 = _tuple[2];
-		_struct = stat, _view = new DataView(_array.buffer, _array.byteOffset), _struct.Dev = new $Uint64(_view.getUint32(4, true), _view.getUint32(0, true)), _struct.Ino = new $Uint64(_view.getUint32(12, true), _view.getUint32(8, true)), _struct.Nlink = new $Uint64(_view.getUint32(20, true), _view.getUint32(16, true)), _struct.Mode = _view.getUint32(24, true), _struct.Uid = _view.getUint32(28, true), _struct.Gid = _view.getUint32(32, true), _struct.X__pad0 = _view.getInt32(36, true), _struct.Rdev = new $Uint64(_view.getUint32(44, true), _view.getUint32(40, true)), _struct.Size = new $Int64(_view.getUint32(52, true), _view.getUint32(48, true)), _struct.Blksize = new $Int64(_view.getUint32(60, true), _view.getUint32(56, true)), _struct.Blocks = new $Int64(_view.getUint32(68, true), _view.getUint32(64, true)), _struct.Atim.Sec = new $Int64(_view.getUint32(76, true), _view.getUint32(72, true)), _struct.Atim.Nsec = new $Int64(_view.getUint32(84, true), _view.getUint32(80, true)), _struct.Mtim.Sec = new $Int64(_view.getUint32(92, true), _view.getUint32(88, true)), _struct.Mtim.Nsec = new $Int64(_view.getUint32(100, true), _view.getUint32(96, true)), _struct.Ctim.Sec = new $Int64(_view.getUint32(108, true), _view.getUint32(104, true)), _struct.Ctim.Nsec = new $Int64(_view.getUint32(116, true), _view.getUint32(112, true)), _struct.X__unused = new ($nativeArray("Int64"))(_array.buffer, $min(_array.byteOffset + 120, _array.buffer.byteLength));
+		_tuple = Syscall(339, (fd >>> 0), _array, 0); e1 = _tuple[2];
+		_struct = stat, _view = new DataView(_array.buffer, _array.byteOffset), _struct.Dev = _view.getInt32(0, true), _struct.Mode = _view.getUint16(4, true), _struct.Nlink = _view.getUint16(6, true), _struct.Ino = new $Uint64(_view.getUint32(12, true), _view.getUint32(8, true)), _struct.Uid = _view.getUint32(16, true), _struct.Gid = _view.getUint32(20, true), _struct.Rdev = _view.getInt32(24, true), _struct.Pad_cgo_0 = new ($nativeArray("Uint8"))(_array.buffer, $min(_array.byteOffset + 28, _array.buffer.byteLength)), _struct.Atimespec.Sec = new $Int64(_view.getUint32(36, true), _view.getUint32(32, true)), _struct.Atimespec.Nsec = new $Int64(_view.getUint32(44, true), _view.getUint32(40, true)), _struct.Mtimespec.Sec = new $Int64(_view.getUint32(52, true), _view.getUint32(48, true)), _struct.Mtimespec.Nsec = new $Int64(_view.getUint32(60, true), _view.getUint32(56, true)), _struct.Ctimespec.Sec = new $Int64(_view.getUint32(68, true), _view.getUint32(64, true)), _struct.Ctimespec.Nsec = new $Int64(_view.getUint32(76, true), _view.getUint32(72, true)), _struct.Birthtimespec.Sec = new $Int64(_view.getUint32(84, true), _view.getUint32(80, true)), _struct.Birthtimespec.Nsec = new $Int64(_view.getUint32(92, true), _view.getUint32(88, true)), _struct.Size = new $Int64(_view.getUint32(100, true), _view.getUint32(96, true)), _struct.Blocks = new $Int64(_view.getUint32(108, true), _view.getUint32(104, true)), _struct.Blksize = _view.getInt32(112, true), _struct.Flags = _view.getUint32(116, true), _struct.Gen = _view.getUint32(120, true), _struct.Lspare = _view.getInt32(124, true), _struct.Qspare = new ($nativeArray("Int64"))(_array.buffer, $min(_array.byteOffset + 128, _array.buffer.byteLength));
+		if (!((e1 === 0))) {
+			err = new Errno(e1);
+		}
+		return err;
+	};
+	Fsync = $pkg.Fsync = function(fd) {
+		var err, _tuple, e1;
+		err = null;
+		_tuple = Syscall(95, (fd >>> 0), 0, 0); e1 = _tuple[2];
 		if (!((e1 === 0))) {
 			err = new Errno(e1);
 		}
@@ -3086,11 +3000,28 @@ $packages["syscall"] = (function() {
 	Ftruncate = $pkg.Ftruncate = function(fd, length) {
 		var err, _tuple, e1;
 		err = null;
-		_tuple = Syscall(77, (fd >>> 0), (length.low >>> 0), 0); e1 = _tuple[2];
+		_tuple = Syscall(201, (fd >>> 0), (length.low >>> 0), 0); e1 = _tuple[2];
 		if (!((e1 === 0))) {
 			err = new Errno(e1);
 		}
 		return err;
+	};
+	Getdirentries = $pkg.Getdirentries = function(fd, buf, basep) {
+		var n, err, _p0, _tuple, r0, e1;
+		n = 0;
+		err = null;
+		_p0 = 0;
+		if (buf.length > 0) {
+			_p0 = $sliceToArray(buf);
+		} else {
+			_p0 = new Uint8Array(0);
+		}
+		_tuple = Syscall6(344, (fd >>> 0), _p0, (buf.length >>> 0), basep, 0, 0); r0 = _tuple[0]; e1 = _tuple[2];
+		n = (r0 >> 0);
+		if (!((e1 === 0))) {
+			err = new Errno(e1);
+		}
+		return [n, err];
 	};
 	Lstat = $pkg.Lstat = function(path, stat) {
 		var err, _p0, _tuple, _tuple$1, _array, _struct, _view, e1;
@@ -3101,12 +3032,28 @@ $packages["syscall"] = (function() {
 			return err;
 		}
 		_array = new Uint8Array(144);
-		_tuple$1 = Syscall(6, _p0, _array, 0); e1 = _tuple$1[2];
-		_struct = stat, _view = new DataView(_array.buffer, _array.byteOffset), _struct.Dev = new $Uint64(_view.getUint32(4, true), _view.getUint32(0, true)), _struct.Ino = new $Uint64(_view.getUint32(12, true), _view.getUint32(8, true)), _struct.Nlink = new $Uint64(_view.getUint32(20, true), _view.getUint32(16, true)), _struct.Mode = _view.getUint32(24, true), _struct.Uid = _view.getUint32(28, true), _struct.Gid = _view.getUint32(32, true), _struct.X__pad0 = _view.getInt32(36, true), _struct.Rdev = new $Uint64(_view.getUint32(44, true), _view.getUint32(40, true)), _struct.Size = new $Int64(_view.getUint32(52, true), _view.getUint32(48, true)), _struct.Blksize = new $Int64(_view.getUint32(60, true), _view.getUint32(56, true)), _struct.Blocks = new $Int64(_view.getUint32(68, true), _view.getUint32(64, true)), _struct.Atim.Sec = new $Int64(_view.getUint32(76, true), _view.getUint32(72, true)), _struct.Atim.Nsec = new $Int64(_view.getUint32(84, true), _view.getUint32(80, true)), _struct.Mtim.Sec = new $Int64(_view.getUint32(92, true), _view.getUint32(88, true)), _struct.Mtim.Nsec = new $Int64(_view.getUint32(100, true), _view.getUint32(96, true)), _struct.Ctim.Sec = new $Int64(_view.getUint32(108, true), _view.getUint32(104, true)), _struct.Ctim.Nsec = new $Int64(_view.getUint32(116, true), _view.getUint32(112, true)), _struct.X__unused = new ($nativeArray("Int64"))(_array.buffer, $min(_array.byteOffset + 120, _array.buffer.byteLength));
+		_tuple$1 = Syscall(340, _p0, _array, 0); e1 = _tuple$1[2];
+		_struct = stat, _view = new DataView(_array.buffer, _array.byteOffset), _struct.Dev = _view.getInt32(0, true), _struct.Mode = _view.getUint16(4, true), _struct.Nlink = _view.getUint16(6, true), _struct.Ino = new $Uint64(_view.getUint32(12, true), _view.getUint32(8, true)), _struct.Uid = _view.getUint32(16, true), _struct.Gid = _view.getUint32(20, true), _struct.Rdev = _view.getInt32(24, true), _struct.Pad_cgo_0 = new ($nativeArray("Uint8"))(_array.buffer, $min(_array.byteOffset + 28, _array.buffer.byteLength)), _struct.Atimespec.Sec = new $Int64(_view.getUint32(36, true), _view.getUint32(32, true)), _struct.Atimespec.Nsec = new $Int64(_view.getUint32(44, true), _view.getUint32(40, true)), _struct.Mtimespec.Sec = new $Int64(_view.getUint32(52, true), _view.getUint32(48, true)), _struct.Mtimespec.Nsec = new $Int64(_view.getUint32(60, true), _view.getUint32(56, true)), _struct.Ctimespec.Sec = new $Int64(_view.getUint32(68, true), _view.getUint32(64, true)), _struct.Ctimespec.Nsec = new $Int64(_view.getUint32(76, true), _view.getUint32(72, true)), _struct.Birthtimespec.Sec = new $Int64(_view.getUint32(84, true), _view.getUint32(80, true)), _struct.Birthtimespec.Nsec = new $Int64(_view.getUint32(92, true), _view.getUint32(88, true)), _struct.Size = new $Int64(_view.getUint32(100, true), _view.getUint32(96, true)), _struct.Blocks = new $Int64(_view.getUint32(108, true), _view.getUint32(104, true)), _struct.Blksize = _view.getInt32(112, true), _struct.Flags = _view.getUint32(116, true), _struct.Gen = _view.getUint32(120, true), _struct.Lspare = _view.getInt32(124, true), _struct.Qspare = new ($nativeArray("Int64"))(_array.buffer, $min(_array.byteOffset + 128, _array.buffer.byteLength));
 		if (!((e1 === 0))) {
 			err = new Errno(e1);
 		}
 		return err;
+	};
+	Open = $pkg.Open = function(path, mode, perm) {
+		var fd, err, _p0, _tuple, _tuple$1, r0, e1;
+		fd = 0;
+		err = null;
+		_p0 = ($ptrType($Uint8)).nil;
+		_tuple = BytePtrFromString(path); _p0 = _tuple[0]; err = _tuple[1];
+		if (!($interfaceIsEqual(err, null))) {
+			return [fd, err];
+		}
+		_tuple$1 = Syscall(5, _p0, (mode >>> 0), (perm >>> 0)); r0 = _tuple$1[0]; e1 = _tuple$1[2];
+		fd = (r0 >> 0);
+		if (!((e1 === 0))) {
+			err = new Errno(e1);
+		}
+		return [fd, err];
 	};
 	Pread = $pkg.Pread = function(fd, p, offset) {
 		var n, err, _p0, _tuple, r0, e1;
@@ -3118,7 +3065,7 @@ $packages["syscall"] = (function() {
 		} else {
 			_p0 = new Uint8Array(0);
 		}
-		_tuple = Syscall6(17, (fd >>> 0), _p0, (p.length >>> 0), (offset.low >>> 0), 0, 0); r0 = _tuple[0]; e1 = _tuple[2];
+		_tuple = Syscall6(153, (fd >>> 0), _p0, (p.length >>> 0), (offset.low >>> 0), 0, 0); r0 = _tuple[0]; e1 = _tuple[2];
 		n = (r0 >> 0);
 		if (!((e1 === 0))) {
 			err = new Errno(e1);
@@ -3135,7 +3082,24 @@ $packages["syscall"] = (function() {
 		} else {
 			_p0 = new Uint8Array(0);
 		}
-		_tuple = Syscall6(18, (fd >>> 0), _p0, (p.length >>> 0), (offset.low >>> 0), 0, 0); r0 = _tuple[0]; e1 = _tuple[2];
+		_tuple = Syscall6(154, (fd >>> 0), _p0, (p.length >>> 0), (offset.low >>> 0), 0, 0); r0 = _tuple[0]; e1 = _tuple[2];
+		n = (r0 >> 0);
+		if (!((e1 === 0))) {
+			err = new Errno(e1);
+		}
+		return [n, err];
+	};
+	read = function(fd, p) {
+		var n, err, _p0, _tuple, r0, e1;
+		n = 0;
+		err = null;
+		_p0 = 0;
+		if (p.length > 0) {
+			_p0 = $sliceToArray(p);
+		} else {
+			_p0 = new Uint8Array(0);
+		}
+		_tuple = Syscall(3, (fd >>> 0), _p0, (p.length >>> 0)); r0 = _tuple[0]; e1 = _tuple[2];
 		n = (r0 >> 0);
 		if (!((e1 === 0))) {
 			err = new Errno(e1);
@@ -3143,26 +3107,52 @@ $packages["syscall"] = (function() {
 		return [n, err];
 	};
 	Seek = $pkg.Seek = function(fd, offset, whence) {
-		var off, err, _tuple, r0, e1;
-		off = new $Int64(0, 0);
+		var newoffset, err, _tuple, r0, e1;
+		newoffset = new $Int64(0, 0);
 		err = null;
-		_tuple = Syscall(8, (fd >>> 0), (offset.low >>> 0), (whence >>> 0)); r0 = _tuple[0]; e1 = _tuple[2];
-		off = new $Int64(0, r0.constructor === Number ? r0 : 1);
+		_tuple = Syscall(199, (fd >>> 0), (offset.low >>> 0), (whence >>> 0)); r0 = _tuple[0]; e1 = _tuple[2];
+		newoffset = new $Int64(0, r0.constructor === Number ? r0 : 1);
 		if (!((e1 === 0))) {
 			err = new Errno(e1);
 		}
-		return [off, err];
+		return [newoffset, err];
 	};
-	mmap = function(addr, length, prot, flags, fd, offset) {
-		var xaddr, err, _tuple, r0, e1;
-		xaddr = 0;
+	write = function(fd, p) {
+		var n, err, _p0, _tuple, r0, e1;
+		n = 0;
 		err = null;
-		_tuple = Syscall6(9, addr, length, (prot >>> 0), (flags >>> 0), (fd >>> 0), (offset.low >>> 0)); r0 = _tuple[0]; e1 = _tuple[2];
-		xaddr = r0;
+		_p0 = 0;
+		if (p.length > 0) {
+			_p0 = $sliceToArray(p);
+		} else {
+			_p0 = new Uint8Array(0);
+		}
+		_tuple = Syscall(4, (fd >>> 0), _p0, (p.length >>> 0)); r0 = _tuple[0]; e1 = _tuple[2];
+		n = (r0 >> 0);
 		if (!((e1 === 0))) {
 			err = new Errno(e1);
 		}
-		return [xaddr, err];
+		return [n, err];
+	};
+	mmap = function(addr, length, prot, flag, fd, pos) {
+		var ret, err, _tuple, r0, e1;
+		ret = 0;
+		err = null;
+		_tuple = Syscall6(197, addr, length, (prot >>> 0), (flag >>> 0), (fd >>> 0), (pos.low >>> 0)); r0 = _tuple[0]; e1 = _tuple[2];
+		ret = r0;
+		if (!((e1 === 0))) {
+			err = new Errno(e1);
+		}
+		return [ret, err];
+	};
+	munmap = function(addr, length) {
+		var err, _tuple, e1;
+		err = null;
+		_tuple = Syscall(73, addr, length, 0); e1 = _tuple[2];
+		if (!((e1 === 0))) {
+			err = new Errno(e1);
+		}
+		return err;
 	};
 	$pkg.init = function() {
 		($ptrType(mmapper)).methods = [["Lock", "Lock", "", [], [], false, 0], ["Mmap", "Mmap", "", [$Int, $Int64, $Int, $Int, $Int], [($sliceType($Uint8)), $error], false, -1], ["Munmap", "Munmap", "", [($sliceType($Uint8))], [$error], false, -1], ["Unlock", "Unlock", "", [], [], false, 0]];
@@ -3171,8 +3161,8 @@ $packages["syscall"] = (function() {
 		($ptrType(Errno)).methods = [["Error", "Error", "", [], [$String], false, -1], ["Temporary", "Temporary", "", [], [$Bool], false, -1], ["Timeout", "Timeout", "", [], [$Bool], false, -1]];
 		($ptrType(Timespec)).methods = [["Nano", "Nano", "", [], [$Int64], false, -1], ["Unix", "Unix", "", [], [$Int64, $Int64], false, -1]];
 		Timespec.init([["Sec", "Sec", "", $Int64, ""], ["Nsec", "Nsec", "", $Int64, ""]]);
-		Stat_t.init([["Dev", "Dev", "", $Uint64, ""], ["Ino", "Ino", "", $Uint64, ""], ["Nlink", "Nlink", "", $Uint64, ""], ["Mode", "Mode", "", $Uint32, ""], ["Uid", "Uid", "", $Uint32, ""], ["Gid", "Gid", "", $Uint32, ""], ["X__pad0", "X__pad0", "", $Int32, ""], ["Rdev", "Rdev", "", $Uint64, ""], ["Size", "Size", "", $Int64, ""], ["Blksize", "Blksize", "", $Int64, ""], ["Blocks", "Blocks", "", $Int64, ""], ["Atim", "Atim", "", Timespec, ""], ["Mtim", "Mtim", "", Timespec, ""], ["Ctim", "Ctim", "", Timespec, ""], ["X__unused", "X__unused", "", ($arrayType($Int64, 3)), ""]]);
-		Dirent.init([["Ino", "Ino", "", $Uint64, ""], ["Off", "Off", "", $Int64, ""], ["Reclen", "Reclen", "", $Uint16, ""], ["Type", "Type", "", $Uint8, ""], ["Name", "Name", "", ($arrayType($Int8, 256)), ""], ["Pad_cgo_0", "Pad_cgo_0", "", ($arrayType($Uint8, 5)), ""]]);
+		Stat_t.init([["Dev", "Dev", "", $Int32, ""], ["Mode", "Mode", "", $Uint16, ""], ["Nlink", "Nlink", "", $Uint16, ""], ["Ino", "Ino", "", $Uint64, ""], ["Uid", "Uid", "", $Uint32, ""], ["Gid", "Gid", "", $Uint32, ""], ["Rdev", "Rdev", "", $Int32, ""], ["Pad_cgo_0", "Pad_cgo_0", "", ($arrayType($Uint8, 4)), ""], ["Atimespec", "Atimespec", "", Timespec, ""], ["Mtimespec", "Mtimespec", "", Timespec, ""], ["Ctimespec", "Ctimespec", "", Timespec, ""], ["Birthtimespec", "Birthtimespec", "", Timespec, ""], ["Size", "Size", "", $Int64, ""], ["Blocks", "Blocks", "", $Int64, ""], ["Blksize", "Blksize", "", $Int32, ""], ["Flags", "Flags", "", $Uint32, ""], ["Gen", "Gen", "", $Uint32, ""], ["Lspare", "Lspare", "", $Int32, ""], ["Qspare", "Qspare", "", ($arrayType($Int64, 2)), ""]]);
+		Dirent.init([["Ino", "Ino", "", $Uint64, ""], ["Seekoff", "Seekoff", "", $Uint64, ""], ["Reclen", "Reclen", "", $Uint16, ""], ["Namlen", "Namlen", "", $Uint16, ""], ["Type", "Type", "", $Uint8, ""], ["Name", "Name", "", ($arrayType($Int8, 1024)), ""], ["Pad_cgo_0", "Pad_cgo_0", "", ($arrayType($Uint8, 3)), ""]]);
 		lineBuffer = ($sliceType($Uint8)).nil;
 		syscallModule = null;
 		envOnce = new sync.Once.Ptr();
@@ -3186,7 +3176,7 @@ $packages["syscall"] = (function() {
 		$pkg.Stdin = 0;
 		$pkg.Stdout = 1;
 		$pkg.Stderr = 2;
-		errors = $toNativeArray("String", ["", "operation not permitted", "no such file or directory", "no such process", "interrupted system call", "input/output error", "no such device or address", "argument list too long", "exec format error", "bad file descriptor", "no child processes", "resource temporarily unavailable", "cannot allocate memory", "permission denied", "bad address", "block device required", "device or resource busy", "file exists", "invalid cross-device link", "no such device", "not a directory", "is a directory", "invalid argument", "too many open files in system", "too many open files", "inappropriate ioctl for device", "text file busy", "file too large", "no space left on device", "illegal seek", "read-only file system", "too many links", "broken pipe", "numerical argument out of domain", "numerical result out of range", "resource deadlock avoided", "file name too long", "no locks available", "function not implemented", "directory not empty", "too many levels of symbolic links", "", "no message of desired type", "identifier removed", "channel number out of range", "level 2 not synchronized", "level 3 halted", "level 3 reset", "link number out of range", "protocol driver not attached", "no CSI structure available", "level 2 halted", "invalid exchange", "invalid request descriptor", "exchange full", "no anode", "invalid request code", "invalid slot", "", "bad font file format", "device not a stream", "no data available", "timer expired", "out of streams resources", "machine is not on the network", "package not installed", "object is remote", "link has been severed", "advertise error", "srmount error", "communication error on send", "protocol error", "multihop attempted", "RFS specific error", "bad message", "value too large for defined data type", "name not unique on network", "file descriptor in bad state", "remote address changed", "can not access a needed shared library", "accessing a corrupted shared library", ".lib section in a.out corrupted", "attempting to link in too many shared libraries", "cannot exec a shared library directly", "invalid or incomplete multibyte or wide character", "interrupted system call should be restarted", "streams pipe error", "too many users", "socket operation on non-socket", "destination address required", "message too long", "protocol wrong type for socket", "protocol not available", "protocol not supported", "socket type not supported", "operation not supported", "protocol family not supported", "address family not supported by protocol", "address already in use", "cannot assign requested address", "network is down", "network is unreachable", "network dropped connection on reset", "software caused connection abort", "connection reset by peer", "no buffer space available", "transport endpoint is already connected", "transport endpoint is not connected", "cannot send after transport endpoint shutdown", "too many references: cannot splice", "connection timed out", "connection refused", "host is down", "no route to host", "operation already in progress", "operation now in progress", "stale NFS file handle", "structure needs cleaning", "not a XENIX named type file", "no XENIX semaphores available", "is a named type file", "remote I/O error", "disk quota exceeded", "no medium found", "wrong medium type", "operation canceled", "required key not available", "key has expired", "key has been revoked", "key was rejected by service", "owner died", "state not recoverable", "operation not possible due to RF-kill"]);
+		errors = $toNativeArray("String", ["", "operation not permitted", "no such file or directory", "no such process", "interrupted system call", "input/output error", "device not configured", "argument list too long", "exec format error", "bad file descriptor", "no child processes", "resource deadlock avoided", "cannot allocate memory", "permission denied", "bad address", "block device required", "resource busy", "file exists", "cross-device link", "operation not supported by device", "not a directory", "is a directory", "invalid argument", "too many open files in system", "too many open files", "inappropriate ioctl for device", "text file busy", "file too large", "no space left on device", "illegal seek", "read-only file system", "too many links", "broken pipe", "numerical argument out of domain", "result too large", "resource temporarily unavailable", "operation now in progress", "operation already in progress", "socket operation on non-socket", "destination address required", "message too long", "protocol wrong type for socket", "protocol not available", "protocol not supported", "socket type not supported", "operation not supported", "protocol family not supported", "address family not supported by protocol family", "address already in use", "can't assign requested address", "network is down", "network is unreachable", "network dropped connection on reset", "software caused connection abort", "connection reset by peer", "no buffer space available", "socket is already connected", "socket is not connected", "can't send after socket shutdown", "too many references: can't splice", "operation timed out", "connection refused", "too many levels of symbolic links", "file name too long", "host is down", "no route to host", "directory not empty", "too many processes", "too many users", "disc quota exceeded", "stale NFS file handle", "too many levels of remote in path", "RPC struct is bad", "RPC version wrong", "RPC prog. not avail", "program version wrong", "bad procedure for program", "no locks available", "function not implemented", "inappropriate file type or format", "authentication error", "need authenticator", "device power is off", "device error", "value too large to be stored in data type", "bad executable (or shared library)", "bad CPU type in executable", "shared library version mismatch", "malformed Mach-o file", "operation canceled", "identifier removed", "no message of desired type", "illegal byte sequence", "attribute not found", "bad message", "EMULTIHOP (Reserved)", "no message available on STREAM", "ENOLINK (Reserved)", "no STREAM resources", "not a STREAM", "protocol error", "STREAM ioctl timeout", "operation not supported on socket", "policy not found", "state not recoverable", "previous owner died"]);
 		var process, jsEnv, envkeys, i, key;
 		process = $global.process;
 		if (!(process === undefined)) {
@@ -5390,7 +5380,7 @@ $packages["time"] = (function() {
 	return $pkg;
 })();
 $packages["os"] = (function() {
-	var $pkg = {}, js = $packages["github.com/gopherjs/gopherjs/js"], io = $packages["io"], syscall = $packages["syscall"], time = $packages["time"], errors = $packages["errors"], runtime = $packages["runtime"], atomic = $packages["sync/atomic"], sync = $packages["sync"], PathError, SyscallError, File, file, dirInfo, FileInfo, FileMode, fileStat, NewSyscallError, sigpipe, syscallMode, NewFile, epipecheck, Lstat, basename, IsPathSeparator, fileInfoFromStat, timespecToTime, lstat;
+	var $pkg = {}, js = $packages["github.com/gopherjs/gopherjs/js"], io = $packages["io"], syscall = $packages["syscall"], time = $packages["time"], errors = $packages["errors"], runtime = $packages["runtime"], atomic = $packages["sync/atomic"], sync = $packages["sync"], PathError, SyscallError, File, file, dirInfo, FileInfo, FileMode, fileStat, NewSyscallError, sigpipe, syscallMode, NewFile, epipecheck, Lstat, basename, useSyscallwdDarwin, IsPathSeparator, fileInfoFromStat, timespecToTime, lstat, useSyscallwd;
 	PathError = $pkg.PathError = $newType(0, "Struct", "os.PathError", "PathError", "os", function(Op_, Path_, Err_) {
 		this.$val = this;
 		this.Op = Op_ !== undefined ? Op_ : "";
@@ -5921,15 +5911,18 @@ $packages["os"] = (function() {
 		}
 		return name;
 	};
+	useSyscallwdDarwin = function(err) {
+		return !($interfaceIsEqual(err, new syscall.Errno(45)));
+	};
 	IsPathSeparator = $pkg.IsPathSeparator = function(c) {
 		return 47 === c;
 	};
 	fileInfoFromStat = function(st, name) {
 		var _struct, _struct$1, fs, _ref;
-		fs = new fileStat.Ptr(basename(name), st.Size, 0, (_struct$1 = timespecToTime((_struct = st.Mtim, new syscall.Timespec.Ptr(_struct.Sec, _struct.Nsec))), new time.Time.Ptr(_struct$1.sec, _struct$1.nsec, _struct$1.loc)), st);
+		fs = new fileStat.Ptr(basename(name), st.Size, 0, (_struct$1 = timespecToTime((_struct = st.Mtimespec, new syscall.Timespec.Ptr(_struct.Sec, _struct.Nsec))), new time.Time.Ptr(_struct$1.sec, _struct$1.nsec, _struct$1.loc)), st);
 		fs.mode = (((st.Mode & 511) >>> 0) >>> 0);
 		_ref = (st.Mode & 61440) >>> 0;
-		if (_ref === 24576) {
+		if (_ref === 24576 || _ref === 57344) {
 			fs.mode = (fs.mode | 67108864) >>> 0;
 		} else if (_ref === 8192) {
 			fs.mode = (fs.mode | 69206016) >>> 0;
@@ -6075,6 +6068,9 @@ $packages["os"] = (function() {
 		$pkg.Stdout = NewFile((syscall.Stdout >>> 0), "/dev/stdout");
 		$pkg.Stderr = NewFile((syscall.Stderr >>> 0), "/dev/stderr");
 		lstat = Lstat;
+		useSyscallwd = (function() {
+			return true;
+		});
 		var process, args, i;
 		process = $global.process;
 		if (!(process === undefined)) {
@@ -6086,6 +6082,7 @@ $packages["os"] = (function() {
 				i = i + 1 >> 0;
 			}
 		}
+		useSyscallwd = useSyscallwdDarwin;
 	}
 	return $pkg;
 })();
@@ -13145,7 +13142,7 @@ $packages["github.com/h8liu/c8/c8go/writer"] = (function() {
 	}
 	return $pkg;
 })();
-$packages["/home/h8liu/gopath/src/github.com/h8liu/c8/c8go"] = (function() {
+$packages["/Users/h8liu/gopath/src/github.com/h8liu/c8/c8go"] = (function() {
 	var $pkg = {}, fmt = $packages["fmt"], strings = $packages["strings"], js = $packages["github.com/gopherjs/gopherjs/js"], shell = $packages["github.com/h8liu/c8/c8go/shell"], writer = $packages["github.com/h8liu/c8/c8go/writer"], main, Launch, Pwd;
 	main = $pkg.main = function() {
 		var global, _map, _key;
@@ -13206,8 +13203,8 @@ $packages["path/filepath"].init();
 $packages["github.com/h8liu/c8/c8go/fs"].init();
 $packages["github.com/h8liu/c8/c8go/shell"].init();
 $packages["github.com/h8liu/c8/c8go/writer"].init();
-$packages["/home/h8liu/gopath/src/github.com/h8liu/c8/c8go"].init();
-$packages["/home/h8liu/gopath/src/github.com/h8liu/c8/c8go"].main();
+$packages["/Users/h8liu/gopath/src/github.com/h8liu/c8/c8go"].init();
+$packages["/Users/h8liu/gopath/src/github.com/h8liu/c8/c8go"].main();
 
 })();
 //# sourceMappingURL=c8go.js.map
