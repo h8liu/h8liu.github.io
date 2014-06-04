@@ -1661,13 +1661,59 @@ $packages["sync"] = (function() {
 	return $pkg;
 })();
 $packages["io"] = (function() {
-	var $pkg = {}, errors = $packages["errors"], sync = $packages["sync"], Reader, Writer, RuneReader, errWhence, errOffset;
+	var $pkg = {}, errors = $packages["errors"], sync = $packages["sync"], Reader, Writer, ReaderFrom, WriterTo, RuneReader, Copy, errWhence, errOffset;
 	Reader = $pkg.Reader = $newType(8, "Interface", "io.Reader", "Reader", "io", null);
 	Writer = $pkg.Writer = $newType(8, "Interface", "io.Writer", "Writer", "io", null);
+	ReaderFrom = $pkg.ReaderFrom = $newType(8, "Interface", "io.ReaderFrom", "ReaderFrom", "io", null);
+	WriterTo = $pkg.WriterTo = $newType(8, "Interface", "io.WriterTo", "WriterTo", "io", null);
 	RuneReader = $pkg.RuneReader = $newType(8, "Interface", "io.RuneReader", "RuneReader", "io", null);
+	Copy = $pkg.Copy = function(dst, src) {
+		var written, err, _tuple, wt, ok, _tuple$1, _tuple$2, rt, ok$1, _tuple$3, buf, _tuple$4, nr, er, _tuple$5, nw, ew, x, _tmp, _tmp$1;
+		written = new $Int64(0, 0);
+		err = null;
+		_tuple = (src !== null && WriterTo.implementedBy.indexOf(src.constructor) !== -1 ? [src, true] : [null, false]); wt = _tuple[0]; ok = _tuple[1];
+		if (ok) {
+			_tuple$1 = wt.WriteTo(dst); written = _tuple$1[0]; err = _tuple$1[1];
+			return [written, err];
+		}
+		_tuple$2 = (dst !== null && ReaderFrom.implementedBy.indexOf(dst.constructor) !== -1 ? [dst, true] : [null, false]); rt = _tuple$2[0]; ok$1 = _tuple$2[1];
+		if (ok$1) {
+			_tuple$3 = rt.ReadFrom(src); written = _tuple$3[0]; err = _tuple$3[1];
+			return [written, err];
+		}
+		buf = ($sliceType($Uint8)).make(32768, 0, function() { return 0; });
+		while (true) {
+			_tuple$4 = src.Read(buf); nr = _tuple$4[0]; er = _tuple$4[1];
+			if (nr > 0) {
+				_tuple$5 = dst.Write($subslice(buf, 0, nr)); nw = _tuple$5[0]; ew = _tuple$5[1];
+				if (nw > 0) {
+					written = (x = new $Int64(0, nw), new $Int64(written.high + x.high, written.low + x.low));
+				}
+				if (!($interfaceIsEqual(ew, null))) {
+					err = ew;
+					break;
+				}
+				if (!((nr === nw))) {
+					err = $pkg.ErrShortWrite;
+					break;
+				}
+			}
+			if ($interfaceIsEqual(er, $pkg.EOF)) {
+				break;
+			}
+			if (!($interfaceIsEqual(er, null))) {
+				err = er;
+				break;
+			}
+		}
+		_tmp = written; _tmp$1 = err; written = _tmp; err = _tmp$1;
+		return [written, err];
+	};
 	$pkg.init = function() {
 		Reader.init([["Read", "Read", "", [($sliceType($Uint8))], [$Int, $error], false]]);
 		Writer.init([["Write", "Write", "", [($sliceType($Uint8))], [$Int, $error], false]]);
+		ReaderFrom.init([["ReadFrom", "ReadFrom", "", [Reader], [$Int64, $error], false]]);
+		WriterTo.init([["WriteTo", "WriteTo", "", [Writer], [$Int64, $error], false]]);
 		RuneReader.init([["ReadRune", "ReadRune", "", [], [$Int32, $Int, $error], false]]);
 		$pkg.ErrShortWrite = errors.New("short write");
 		$pkg.ErrShortBuffer = errors.New("short buffer");
@@ -2204,7 +2250,7 @@ $packages["unicode/utf8"] = (function() {
 	return $pkg;
 })();
 $packages["bytes"] = (function() {
-	var $pkg = {}, errors = $packages["errors"], io = $packages["io"], utf8 = $packages["unicode/utf8"], unicode = $packages["unicode"], Buffer, readOp, IndexByte, makeSlice;
+	var $pkg = {}, errors = $packages["errors"], io = $packages["io"], utf8 = $packages["unicode/utf8"], unicode = $packages["unicode"], Buffer, readOp, IndexByte, makeSlice, NewBuffer;
 	Buffer = $pkg.Buffer = $newType(0, "Struct", "bytes.Buffer", "Buffer", "bytes", function(buf_, off_, runeBytes_, bootstrap_, lastRead_) {
 		this.$val = this;
 		this.buf = buf_ !== undefined ? buf_ : ($sliceType($Uint8)).nil;
@@ -2573,6 +2619,9 @@ $packages["bytes"] = (function() {
 		return [line, err];
 	};
 	Buffer.prototype.ReadString = function(delim) { return this.$val.ReadString(delim); };
+	NewBuffer = $pkg.NewBuffer = function(buf) {
+		return new Buffer.Ptr(buf, 0, $makeNativeArray("Uint8", 4, function() { return 0; }), $makeNativeArray("Uint8", 64, function() { return 0; }), 0);
+	};
 	$pkg.init = function() {
 		($ptrType(Buffer)).methods = [["Bytes", "Bytes", "", [], [($sliceType($Uint8))], false, -1], ["Grow", "Grow", "", [$Int], [], false, -1], ["Len", "Len", "", [], [$Int], false, -1], ["Next", "Next", "", [$Int], [($sliceType($Uint8))], false, -1], ["Read", "Read", "", [($sliceType($Uint8))], [$Int, $error], false, -1], ["ReadByte", "ReadByte", "", [], [$Uint8, $error], false, -1], ["ReadBytes", "ReadBytes", "", [$Uint8], [($sliceType($Uint8)), $error], false, -1], ["ReadFrom", "ReadFrom", "", [io.Reader], [$Int64, $error], false, -1], ["ReadRune", "ReadRune", "", [], [$Int32, $Int, $error], false, -1], ["ReadString", "ReadString", "", [$Uint8], [$String, $error], false, -1], ["Reset", "Reset", "", [], [], false, -1], ["String", "String", "", [], [$String], false, -1], ["Truncate", "Truncate", "", [$Int], [], false, -1], ["UnreadByte", "UnreadByte", "", [], [$error], false, -1], ["UnreadRune", "UnreadRune", "", [], [$error], false, -1], ["Write", "Write", "", [($sliceType($Uint8))], [$Int, $error], false, -1], ["WriteByte", "WriteByte", "", [$Uint8], [$error], false, -1], ["WriteRune", "WriteRune", "", [$Int32], [$Int, $error], false, -1], ["WriteString", "WriteString", "", [$String], [$Int, $error], false, -1], ["WriteTo", "WriteTo", "", [io.Writer], [$Int64, $error], false, -1], ["grow", "grow", "bytes", [$Int], [$Int], false, -1], ["readSlice", "readSlice", "bytes", [$Uint8], [($sliceType($Uint8)), $error], false, -1]];
 		Buffer.init([["buf", "buf", "bytes", ($sliceType($Uint8)), ""], ["off", "off", "bytes", $Int, ""], ["runeBytes", "runeBytes", "bytes", ($arrayType($Uint8, 4)), ""], ["bootstrap", "bootstrap", "bytes", ($arrayType($Uint8, 64)), ""], ["lastRead", "lastRead", "bytes", readOp, ""]]);
@@ -12745,16 +12794,16 @@ $packages["path/filepath"] = (function() {
 	return $pkg;
 })();
 $packages["github.com/h8liu/c8/c8go/fs"] = (function() {
-	var $pkg = {}, bytes = $packages["bytes"], filepath = $packages["path/filepath"], strings = $packages["strings"], Dir, File, FileSys, Node, IsValid, NewDir, NewFile, NewFileSys;
+	var $pkg = {}, bytes = $packages["bytes"], io = $packages["io"], filepath = $packages["path/filepath"], strings = $packages["strings"], Dir, File, FileSys, Node, IsValid, NewDir, NewFile, NewFileSys;
 	Dir = $pkg.Dir = $newType(0, "Struct", "fs.Dir", "Dir", "github.com/h8liu/c8/c8go/fs", function(perm_, subs_) {
 		this.$val = this;
 		this.perm = perm_ !== undefined ? perm_ : 0;
 		this.subs = subs_ !== undefined ? subs_ : false;
 	});
-	File = $pkg.File = $newType(0, "Struct", "fs.File", "File", "github.com/h8liu/c8/c8go/fs", function(perm_, Buffer_) {
+	File = $pkg.File = $newType(0, "Struct", "fs.File", "File", "github.com/h8liu/c8/c8go/fs", function(perm_, bytes_) {
 		this.$val = this;
 		this.perm = perm_ !== undefined ? perm_ : 0;
-		this.Buffer = Buffer_ !== undefined ? Buffer_ : ($ptrType(bytes.Buffer)).nil;
+		this.bytes = bytes_ !== undefined ? bytes_ : ($sliceType($Uint8)).nil;
 	});
 	FileSys = $pkg.FileSys = $newType(0, "Struct", "fs.FileSys", "FileSys", "github.com/h8liu/c8/c8go/fs", function(root_) {
 		this.$val = this;
@@ -12852,7 +12901,7 @@ $packages["github.com/h8liu/c8/c8go/fs"] = (function() {
 		var ret;
 		ret = new File.Ptr();
 		ret.perm = perm;
-		ret.Buffer = new bytes.Buffer.Ptr();
+		ret.bytes = ($sliceType($Uint8)).make(0, 0, function() { return 0; });
 		return ret;
 	};
 	File.Ptr.prototype.Perm = function() {
@@ -12861,6 +12910,17 @@ $packages["github.com/h8liu/c8/c8go/fs"] = (function() {
 		return f.perm;
 	};
 	File.prototype.Perm = function() { return this.$val.Perm(); };
+	File.Ptr.prototype.Clone = function() {
+		var f, ret, writer;
+		f = this;
+		ret = new File.Ptr();
+		ret.perm = f.perm;
+		writer = new bytes.Buffer.Ptr();
+		io.Copy(writer, bytes.NewBuffer(f.bytes));
+		ret.bytes = writer.Bytes();
+		return ret;
+	};
+	File.prototype.Clone = function() { return this.$val.Clone(); };
 	NewFileSys = $pkg.NewFileSys = function() {
 		var ret;
 		ret = new FileSys.Ptr();
@@ -12878,7 +12938,7 @@ $packages["github.com/h8liu/c8/c8go/fs"] = (function() {
 		d.Set("rm", NewFile(0));
 		root.Set("bin", d);
 		d = NewDir(0);
-		d.Set("README", NewFile(0));
+		d.Set("readme", NewFile(0));
 		home = NewDir(0);
 		home.Set("h8liu", d);
 		root.Set("home", home);
@@ -12923,9 +12983,8 @@ $packages["github.com/h8liu/c8/c8go/fs"] = (function() {
 	$pkg.init = function() {
 		($ptrType(Dir)).methods = [["Get", "Get", "", [$String], [Node], false, -1], ["Has", "Has", "", [$String], [$Bool], false, -1], ["IsEmpty", "IsEmpty", "", [], [$Bool], false, -1], ["List", "List", "", [], [($sliceType($String))], false, -1], ["Perm", "Perm", "", [], [$Uint32], false, -1], ["Set", "Set", "", [$String, Node], [], false, -1]];
 		Dir.init([["perm", "perm", "github.com/h8liu/c8/c8go/fs", $Uint32, ""], ["subs", "subs", "github.com/h8liu/c8/c8go/fs", ($mapType($String, Node)), ""]]);
-		File.methods = [["Bytes", "Bytes", "", [], [($sliceType($Uint8))], false, 1], ["Grow", "Grow", "", [$Int], [], false, 1], ["Len", "Len", "", [], [$Int], false, 1], ["Next", "Next", "", [$Int], [($sliceType($Uint8))], false, 1], ["Read", "Read", "", [($sliceType($Uint8))], [$Int, $error], false, 1], ["ReadByte", "ReadByte", "", [], [$Uint8, $error], false, 1], ["ReadBytes", "ReadBytes", "", [$Uint8], [($sliceType($Uint8)), $error], false, 1], ["ReadFrom", "ReadFrom", "", [$packages["io"].Reader], [$Int64, $error], false, 1], ["ReadRune", "ReadRune", "", [], [$Int32, $Int, $error], false, 1], ["ReadString", "ReadString", "", [$Uint8], [$String, $error], false, 1], ["Reset", "Reset", "", [], [], false, 1], ["String", "String", "", [], [$String], false, 1], ["Truncate", "Truncate", "", [$Int], [], false, 1], ["UnreadByte", "UnreadByte", "", [], [$error], false, 1], ["UnreadRune", "UnreadRune", "", [], [$error], false, 1], ["Write", "Write", "", [($sliceType($Uint8))], [$Int, $error], false, 1], ["WriteByte", "WriteByte", "", [$Uint8], [$error], false, 1], ["WriteRune", "WriteRune", "", [$Int32], [$Int, $error], false, 1], ["WriteString", "WriteString", "", [$String], [$Int, $error], false, 1], ["WriteTo", "WriteTo", "", [$packages["io"].Writer], [$Int64, $error], false, 1], ["grow", "grow", "bytes", [$Int], [$Int], false, 1], ["readSlice", "readSlice", "bytes", [$Uint8], [($sliceType($Uint8)), $error], false, 1]];
-		($ptrType(File)).methods = [["Bytes", "Bytes", "", [], [($sliceType($Uint8))], false, 1], ["Grow", "Grow", "", [$Int], [], false, 1], ["Len", "Len", "", [], [$Int], false, 1], ["Next", "Next", "", [$Int], [($sliceType($Uint8))], false, 1], ["Perm", "Perm", "", [], [$Uint32], false, -1], ["Read", "Read", "", [($sliceType($Uint8))], [$Int, $error], false, 1], ["ReadByte", "ReadByte", "", [], [$Uint8, $error], false, 1], ["ReadBytes", "ReadBytes", "", [$Uint8], [($sliceType($Uint8)), $error], false, 1], ["ReadFrom", "ReadFrom", "", [$packages["io"].Reader], [$Int64, $error], false, 1], ["ReadRune", "ReadRune", "", [], [$Int32, $Int, $error], false, 1], ["ReadString", "ReadString", "", [$Uint8], [$String, $error], false, 1], ["Reset", "Reset", "", [], [], false, 1], ["String", "String", "", [], [$String], false, 1], ["Truncate", "Truncate", "", [$Int], [], false, 1], ["UnreadByte", "UnreadByte", "", [], [$error], false, 1], ["UnreadRune", "UnreadRune", "", [], [$error], false, 1], ["Write", "Write", "", [($sliceType($Uint8))], [$Int, $error], false, 1], ["WriteByte", "WriteByte", "", [$Uint8], [$error], false, 1], ["WriteRune", "WriteRune", "", [$Int32], [$Int, $error], false, 1], ["WriteString", "WriteString", "", [$String], [$Int, $error], false, 1], ["WriteTo", "WriteTo", "", [$packages["io"].Writer], [$Int64, $error], false, 1], ["grow", "grow", "bytes", [$Int], [$Int], false, 1], ["readSlice", "readSlice", "bytes", [$Uint8], [($sliceType($Uint8)), $error], false, 1]];
-		File.init([["perm", "perm", "github.com/h8liu/c8/c8go/fs", $Uint32, ""], ["Buffer", "", "", ($ptrType(bytes.Buffer)), ""]]);
+		($ptrType(File)).methods = [["Clone", "Clone", "", [], [($ptrType(File))], false, -1], ["Perm", "Perm", "", [], [$Uint32], false, -1]];
+		File.init([["perm", "perm", "github.com/h8liu/c8/c8go/fs", $Uint32, ""], ["bytes", "bytes", "github.com/h8liu/c8/c8go/fs", ($sliceType($Uint8)), ""]]);
 		($ptrType(FileSys)).methods = [["Get", "Get", "", [$String], [Node], false, -1], ["buildSample", "buildSample", "github.com/h8liu/c8/c8go/fs", [], [], false, -1]];
 		FileSys.init([["root", "root", "github.com/h8liu/c8/c8go/fs", ($ptrType(Dir)), ""]]);
 		Node.init([["Perm", "Perm", "", [], [$Uint32], false]]);
@@ -12933,7 +12992,7 @@ $packages["github.com/h8liu/c8/c8go/fs"] = (function() {
 	return $pkg;
 })();
 $packages["github.com/h8liu/c8/c8go/shell"] = (function() {
-	var $pkg = {}, fmt = $packages["fmt"], io = $packages["io"], filepath = $packages["path/filepath"], fs = $packages["github.com/h8liu/c8/c8go/fs"], strings = $packages["strings"], cd, ls, mkdir, notImpl, pwd, rm, System, cp, mv, cat, echo, help, fileSys, builtin;
+	var $pkg = {}, fmt = $packages["fmt"], io = $packages["io"], filepath = $packages["path/filepath"], fs = $packages["github.com/h8liu/c8/c8go/fs"], strings = $packages["strings"], cd, cp, ls, mkdir, mv, notImpl, pwd, rm, System, cat, echo, help, fileSys, builtin;
 	cd = function(args, out) {
 		var rel, pwd$1, node, _tuple, isDir;
 		if (args.length >= 3) {
@@ -12957,6 +13016,67 @@ $packages["github.com/h8liu/c8/c8go/shell"] = (function() {
 			return -1;
 		}
 		$pkg.Pwd = pwd$1;
+		return 0;
+	};
+	cp = function(args, out) {
+		var from, to, _tuple, fromDir, name, toNode, _tuple$1, isDir, node, _tuple$2, d, okay, target, _tuple$3, targetFile, isFile, check, _tuple$4, _tuple$5, dir, rename, dest, _tuple$6, destDir, other;
+		if (!((args.length === 3))) {
+			fmt.Fprintf(out, "cp needs 2 args\n", new ($sliceType($emptyInterface))([]));
+			return -1;
+		}
+		from = filepath.Join(new ($sliceType($String))([$pkg.Pwd, ((1 < 0 || 1 >= args.length) ? $throwRuntimeError("index out of range") : args.array[args.offset + 1])]));
+		to = filepath.Join(new ($sliceType($String))([$pkg.Pwd, ((2 < 0 || 2 >= args.length) ? $throwRuntimeError("index out of range") : args.array[args.offset + 2])]));
+		_tuple = filepath.Split(from); fromDir = _tuple[0]; name = _tuple[1];
+		if (name === "") {
+			fmt.Fprintf(out, "cannot move root\n", new ($sliceType($emptyInterface))([]));
+			return -1;
+		}
+		toNode = fileSys.Get(to);
+		_tuple$1 = (toNode !== null && toNode.constructor === ($ptrType(fs.Dir)) ? [toNode.$val, true] : [($ptrType(fs.Dir)).nil, false]); isDir = _tuple$1[1];
+		if (isDir) {
+			to = filepath.Join(new ($sliceType($String))([to, name]));
+		}
+		if (strings.HasPrefix($pkg.Pwd, to)) {
+			fmt.Fprintf(out, "cannot move to %q under %q\n", new ($sliceType($emptyInterface))([new $String(to), new $String($pkg.Pwd)]));
+			return -1;
+		}
+		if (from === to) {
+			fmt.Fprintf(out, "this copy is a noop\n", new ($sliceType($emptyInterface))([]));
+			return -1;
+		}
+		node = fileSys.Get(fromDir);
+		_tuple$2 = (node !== null && node.constructor === ($ptrType(fs.Dir)) ? [node.$val, true] : [($ptrType(fs.Dir)).nil, false]); d = _tuple$2[0]; okay = _tuple$2[1];
+		if (!okay) {
+			fmt.Fprintf(out, "error: directory not exists\n", new ($sliceType($emptyInterface))([]));
+			return -1;
+		}
+		target = d.Get(name);
+		if ($interfaceIsEqual(target, null)) {
+			fmt.Fprintf(out, "error: copy target not exists\n", new ($sliceType($emptyInterface))([]));
+			return -1;
+		}
+		_tuple$3 = (target !== null && target.constructor === ($ptrType(fs.File)) ? [target.$val, true] : [($ptrType(fs.File)).nil, false]); targetFile = _tuple$3[0]; isFile = _tuple$3[1];
+		if (!isFile) {
+			fmt.Fprintf(out, "error: we can only copy simple files now\n", new ($sliceType($emptyInterface))([]));
+			return -1;
+		}
+		check = fileSys.Get(to);
+		if (!($interfaceIsEqual(check, null))) {
+			_tuple$4 = (check !== null && check.constructor === ($ptrType(fs.Dir)) ? [check.$val, true] : [($ptrType(fs.Dir)).nil, false]); okay = _tuple$4[1];
+			if (okay) {
+				fmt.Fprintf(out, "error: cannot overwrite a directory\n", new ($sliceType($emptyInterface))([]));
+				return -1;
+			}
+		}
+		_tuple$5 = filepath.Split(to); dir = _tuple$5[0]; rename = _tuple$5[1];
+		dest = fileSys.Get(dir);
+		_tuple$6 = (dest !== null && dest.constructor === ($ptrType(fs.Dir)) ? [dest.$val, true] : [($ptrType(fs.Dir)).nil, false]); destDir = _tuple$6[0]; okay = _tuple$6[1];
+		if (!okay) {
+			fmt.Fprintf(out, "error: destination not exists\n", new ($sliceType($emptyInterface))([]));
+			return -1;
+		}
+		other = targetFile.Clone();
+		destDir.Set(rename, other);
 		return 0;
 	};
 	ls = function(args, out) {
@@ -13015,6 +13135,58 @@ $packages["github.com/h8liu/c8/c8go/shell"] = (function() {
 		d.Set(name, newDir);
 		return 0;
 	};
+	mv = function(args, out) {
+		var from, to, _tuple, fromDir, name, toNode, _tuple$1, isDir, node, _tuple$2, d, okay, target, _tuple$3, dir, rename, dest, _tuple$4, destDir;
+		if (!((args.length === 3))) {
+			fmt.Fprintf(out, "mv needs 2 args\n", new ($sliceType($emptyInterface))([]));
+			return -1;
+		}
+		from = filepath.Join(new ($sliceType($String))([$pkg.Pwd, ((1 < 0 || 1 >= args.length) ? $throwRuntimeError("index out of range") : args.array[args.offset + 1])]));
+		to = filepath.Join(new ($sliceType($String))([$pkg.Pwd, ((2 < 0 || 2 >= args.length) ? $throwRuntimeError("index out of range") : args.array[args.offset + 2])]));
+		if (strings.HasPrefix($pkg.Pwd, from)) {
+			fmt.Fprintf(out, "cannot move %q under %q\n", new ($sliceType($emptyInterface))([new $String(from), new $String($pkg.Pwd)]));
+			return -1;
+		}
+		_tuple = filepath.Split(from); fromDir = _tuple[0]; name = _tuple[1];
+		if (name === "") {
+			fmt.Fprintf(out, "cannot move root\n", new ($sliceType($emptyInterface))([]));
+			return -1;
+		}
+		toNode = fileSys.Get(to);
+		_tuple$1 = (toNode !== null && toNode.constructor === ($ptrType(fs.Dir)) ? [toNode.$val, true] : [($ptrType(fs.Dir)).nil, false]); isDir = _tuple$1[1];
+		if (isDir) {
+			to = filepath.Join(new ($sliceType($String))([to, name]));
+		}
+		if (strings.HasPrefix($pkg.Pwd, to)) {
+			fmt.Fprintf(out, "cannot move to %q under %q\n", new ($sliceType($emptyInterface))([new $String(to), new $String($pkg.Pwd)]));
+			return -1;
+		}
+		if (from === to) {
+			fmt.Fprintf(out, "this move is a noop\n", new ($sliceType($emptyInterface))([]));
+			return -1;
+		}
+		node = fileSys.Get(fromDir);
+		_tuple$2 = (node !== null && node.constructor === ($ptrType(fs.Dir)) ? [node.$val, true] : [($ptrType(fs.Dir)).nil, false]); d = _tuple$2[0]; okay = _tuple$2[1];
+		if (!okay) {
+			fmt.Fprintf(out, "error: directory not exists\n", new ($sliceType($emptyInterface))([]));
+			return -1;
+		}
+		target = d.Get(name);
+		if ($interfaceIsEqual(target, null)) {
+			fmt.Fprintf(out, "error: target not exists\n", new ($sliceType($emptyInterface))([]));
+			return -1;
+		}
+		_tuple$3 = filepath.Split(to); dir = _tuple$3[0]; rename = _tuple$3[1];
+		dest = fileSys.Get(dir);
+		_tuple$4 = (dest !== null && dest.constructor === ($ptrType(fs.Dir)) ? [dest.$val, true] : [($ptrType(fs.Dir)).nil, false]); destDir = _tuple$4[0]; okay = _tuple$4[1];
+		if (!okay) {
+			fmt.Fprintf(out, "error: destination not exists\n", new ($sliceType($emptyInterface))([]));
+			return -1;
+		}
+		d.Set(name, null);
+		destDir.Set(rename, target);
+		return 0;
+	};
 	notImpl = function(args, out) {
 		var cmd;
 		cmd = ((0 < 0 || 0 >= args.length) ? $throwRuntimeError("index out of range") : args.array[args.offset + 0]);
@@ -13071,8 +13243,6 @@ $packages["github.com/h8liu/c8/c8go/shell"] = (function() {
 		return entry(args, out);
 	};
 	$pkg.init = function() {
-		cp = notImpl;
-		mv = notImpl;
 		cat = notImpl;
 		echo = notImpl;
 		help = notImpl;
@@ -13170,16 +13340,18 @@ $packages["/Users/h8liu/gopath/src/github.com/h8liu/c8/c8go"] = (function() {
 $error.implementedBy = [$packages["errors"].errorString.Ptr, $packages["github.com/gopherjs/gopherjs/js"].Error.Ptr, $packages["os"].PathError.Ptr, $packages["os"].SyscallError.Ptr, $packages["reflect"].ValueError.Ptr, $packages["runtime"].TypeAssertionError.Ptr, $packages["runtime"].errorString, $packages["syscall"].Errno, $packages["time"].ParseError.Ptr, $ptrType($packages["runtime"].errorString), $ptrType($packages["syscall"].Errno)];
 $packages["github.com/gopherjs/gopherjs/js"].Object.implementedBy = [$packages["github.com/gopherjs/gopherjs/js"].Error, $packages["github.com/gopherjs/gopherjs/js"].Error.Ptr];
 $packages["sync"].Locker.implementedBy = [$packages["sync"].Mutex.Ptr, $packages["sync"].RWMutex.Ptr, $packages["sync"].rlocker.Ptr, $packages["syscall"].mmapper.Ptr];
-$packages["io"].Reader.implementedBy = [$packages["bytes"].Buffer.Ptr, $packages["fmt"].ss.Ptr, $packages["github.com/h8liu/c8/c8go/fs"].File, $packages["github.com/h8liu/c8/c8go/fs"].File.Ptr, $packages["os"].File.Ptr];
-$packages["io"].RuneReader.implementedBy = [$packages["bytes"].Buffer.Ptr, $packages["fmt"].ss.Ptr, $packages["github.com/h8liu/c8/c8go/fs"].File, $packages["github.com/h8liu/c8/c8go/fs"].File.Ptr];
-$packages["io"].Writer.implementedBy = [$packages["bytes"].Buffer.Ptr, $packages["fmt"].pp.Ptr, $packages["github.com/h8liu/c8/c8go/fs"].File, $packages["github.com/h8liu/c8/c8go/fs"].File.Ptr, $packages["github.com/h8liu/c8/c8go/writer"].Writer.Ptr, $packages["os"].File.Ptr, $ptrType($packages["fmt"].buffer)];
+$packages["io"].Reader.implementedBy = [$packages["bytes"].Buffer.Ptr, $packages["fmt"].ss.Ptr, $packages["os"].File.Ptr];
+$packages["io"].ReaderFrom.implementedBy = [$packages["bytes"].Buffer.Ptr];
+$packages["io"].RuneReader.implementedBy = [$packages["bytes"].Buffer.Ptr, $packages["fmt"].ss.Ptr];
+$packages["io"].Writer.implementedBy = [$packages["bytes"].Buffer.Ptr, $packages["fmt"].pp.Ptr, $packages["github.com/h8liu/c8/c8go/writer"].Writer.Ptr, $packages["os"].File.Ptr, $ptrType($packages["fmt"].buffer)];
+$packages["io"].WriterTo.implementedBy = [$packages["bytes"].Buffer.Ptr];
 $packages["os"].FileInfo.implementedBy = [$packages["os"].fileStat.Ptr];
 $packages["reflect"].Type.implementedBy = [$packages["reflect"].arrayType.Ptr, $packages["reflect"].chanType.Ptr, $packages["reflect"].funcType.Ptr, $packages["reflect"].interfaceType.Ptr, $packages["reflect"].mapType.Ptr, $packages["reflect"].ptrType.Ptr, $packages["reflect"].rtype.Ptr, $packages["reflect"].sliceType.Ptr, $packages["reflect"].structType.Ptr];
 $packages["fmt"].Formatter.implementedBy = [];
 $packages["fmt"].GoStringer.implementedBy = [];
 $packages["fmt"].State.implementedBy = [$packages["fmt"].pp.Ptr];
-$packages["fmt"].Stringer.implementedBy = [$packages["bytes"].Buffer.Ptr, $packages["github.com/h8liu/c8/c8go/fs"].File, $packages["github.com/h8liu/c8/c8go/fs"].File.Ptr, $packages["os"].FileMode, $packages["reflect"].ChanDir, $packages["reflect"].Kind, $packages["reflect"].Value, $packages["reflect"].Value.Ptr, $packages["reflect"].arrayType.Ptr, $packages["reflect"].chanType.Ptr, $packages["reflect"].funcType.Ptr, $packages["reflect"].interfaceType.Ptr, $packages["reflect"].mapType.Ptr, $packages["reflect"].ptrType.Ptr, $packages["reflect"].rtype.Ptr, $packages["reflect"].sliceType.Ptr, $packages["reflect"].structType.Ptr, $packages["strconv"].decimal.Ptr, $packages["time"].Duration, $packages["time"].Location.Ptr, $packages["time"].Month, $packages["time"].Time, $packages["time"].Time.Ptr, $packages["time"].Weekday, $ptrType($packages["os"].FileMode), $ptrType($packages["reflect"].ChanDir), $ptrType($packages["reflect"].Kind), $ptrType($packages["time"].Duration), $ptrType($packages["time"].Month), $ptrType($packages["time"].Weekday)];
-$packages["fmt"].runeUnreader.implementedBy = [$packages["bytes"].Buffer.Ptr, $packages["fmt"].ss.Ptr, $packages["github.com/h8liu/c8/c8go/fs"].File, $packages["github.com/h8liu/c8/c8go/fs"].File.Ptr];
+$packages["fmt"].Stringer.implementedBy = [$packages["bytes"].Buffer.Ptr, $packages["os"].FileMode, $packages["reflect"].ChanDir, $packages["reflect"].Kind, $packages["reflect"].Value, $packages["reflect"].Value.Ptr, $packages["reflect"].arrayType.Ptr, $packages["reflect"].chanType.Ptr, $packages["reflect"].funcType.Ptr, $packages["reflect"].interfaceType.Ptr, $packages["reflect"].mapType.Ptr, $packages["reflect"].ptrType.Ptr, $packages["reflect"].rtype.Ptr, $packages["reflect"].sliceType.Ptr, $packages["reflect"].structType.Ptr, $packages["strconv"].decimal.Ptr, $packages["time"].Duration, $packages["time"].Location.Ptr, $packages["time"].Month, $packages["time"].Time, $packages["time"].Time.Ptr, $packages["time"].Weekday, $ptrType($packages["os"].FileMode), $ptrType($packages["reflect"].ChanDir), $ptrType($packages["reflect"].Kind), $ptrType($packages["time"].Duration), $ptrType($packages["time"].Month), $ptrType($packages["time"].Weekday)];
+$packages["fmt"].runeUnreader.implementedBy = [$packages["bytes"].Buffer.Ptr, $packages["fmt"].ss.Ptr];
 $packages["github.com/h8liu/c8/c8go/fs"].Node.implementedBy = [$packages["github.com/h8liu/c8/c8go/fs"].Dir.Ptr, $packages["github.com/h8liu/c8/c8go/fs"].File.Ptr];
 $packages["github.com/gopherjs/gopherjs/js"].init();
 $packages["runtime"].init();
