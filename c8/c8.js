@@ -235,7 +235,7 @@
       c = self.canvas;
       resized = self.term.updateSize(c.width(), c.height());
       if (resized || self.updated) {
-        self._redraw();
+        self._redraw(resized);
       } else {
         self.drawCursor();
       }
@@ -269,7 +269,7 @@
       }
       return Math.ceil((line.length + 1) / ncol);
     };
-    self._redraw = function() {
+    self._redraw = function(resized) {
       var b, buf, c, col, curRow, i, lastLine, lastLineHeight, lastNrow, line, n, ncol, nline, nrow, p, parts, row, term, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _n, _ref;
       nrow = self.term.nrow();
       ncol = self.term.ncol();
