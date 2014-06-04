@@ -83,7 +83,6 @@
     self = this;
     dpr = window.devicePixelRatio;
     context = canvas.getContext('2d');
-    context.scale(dpr, dpr);
     fontSize = 14 * dpr;
     charHeight = fontSize;
     lineMargin = 3 * dpr;
