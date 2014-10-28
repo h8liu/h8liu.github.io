@@ -1,0 +1,64 @@
+<!doctype html>
+<html ng-app="playground">
+  <head>
+    <title>GopherJS Playground</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body ng-controller="PlaygroundCtrl">
+
+    <div id="container">
+
+    <div id="banner">
+      <span id="controls">
+        <input type="button" value="Run" ng-click="run(false)" />
+        <input type="button" value="Format" ng-click="format()" />
+      </span>
+    </div>
+
+    <div id="main">
+        <div id="editor">package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, world.")
+}</div>
+    </div>
+    
+    <div class="box" id="output">
+      <pre ng-repeat="line in output" class="{{line.type}}">{{line.content}}&nbsp;</pre>
+    </div>
+
+    </div>
+    <!-- <div id="screen"><pre id="cons">this will be our new console output</pre></div> -->
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/tomorrow");
+        editor.getSession().setMode("ace/mode/golang");
+        editor.renderer.setShowGutter(false);
+        editor.setHighlightActiveLine(false);
+        editor.setShowFoldWidgets(false);
+        editor.setDisplayIndentGuides(false);
+        editor.setReadOnly(false);
+        editor.setOptions({
+            maxLines: Infinity,
+            minLines: 20,
+            fontFamily: "Consolas, Inconsolata, Monaco, \"Courier New\", Courier, monospace",
+            fontSize: "13px",
+        });
+        editor.commands.removeCommands(["gotoline", "find"]);
+
+        function getEditorValue() {
+            return editor.getValue()
+        }
+        function setEditorValue(s) {
+            return editor.setValue(s)
+        }
+    </script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
+    <script src="playground.js"></script>
+  </body>
+</html>

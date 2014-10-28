@@ -1,0 +1,77 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,400);
+
+body {
+	font-family: "Open Sans", sans-serif;
+	background: #fff;
+    color: #000;
+    margin: 0;
+    padding: 0;
+	margin-left: .1in;
+	margin-right: .1in;
+}
+
+a {
+    color: #009;
+}
+
+pre, code {
+    font-family: Consolas, Menlo, "Courier New", monospace;
+    font-size: 13px;
+}
+
+#output {
+	min-height: 200px;
+    padding: 8px;
+    min-height: 300px;
+    min-width: 500px;
+}
+
+#output pre {
+    margin: 0;
+}
+
+input[type="button"] {
+	font-family: "Open Sans", sans-serif;
+}
+
+#banner {
+	padding-left: .1in;
+	margin-bottom: .2in;
+}
+
+.lines {
+    float: left;
+    overflow: hidden;
+    text-align: right;
+}
+
+.lines div {
+    color: #d3d3d3;
+    padding-right: 5px;
+}
+
+.lineerror {
+    background: #fdd;
+    color: red;
+}
+
+.exit {
+    color: #d3d3d3;
+}
+
+#container {
+	margin-left: calc(50% - .1in - 300px);
+	width: 600px;
+	padding: .1in;
+}
+
+#main {
+    padding-left: .05in;
+    padding-right: .05in;
+    padding-top: .07in;
+    padding-bottom: .07in;
+}
+
+#editor {
+    width: 100%;
+}
