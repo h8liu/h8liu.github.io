@@ -1,1 +1,2 @@
 scp photo.jpeg index.html hm:www/.
+scp photo.jpeg index.html hm:www/lonnie/.
