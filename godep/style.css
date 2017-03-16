@@ -1,0 +1,169 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Open Sans", sans-serif;
+}
+
+a { text-decoration: none; }
+.banner a { /* color: #fff; */ }
+.banner a:hover { text-decoration: underline; }
+
+span.proj, span.curpkg, span.curfile {
+    font-family: "Consolas", monospace;
+    font-size: 12px;
+}
+
+span.curfile {
+    color: #666;
+}
+
+span.base {
+    font-weight: bold;
+    color: #000;
+}
+
+pre {
+    margin: 0;
+    padding: 0;
+    font-family: "Consolas", monospace;
+    font-size: 12px;
+    width: 550px;
+}
+
+div.sep {
+    border-top: 1px dashed #ccc;
+    height: 0;
+}
+
+div.canvas {
+    width: 100%;
+    /* position: fixed;
+    bottom: 0;
+    left: 0;
+    */
+    text-align: center;
+    background: #fff;
+}
+
+div.canvasfull {
+    /* right: 0; */
+}
+
+div.canvastrim {
+    /* right: 611px; */
+}
+
+span.textclose {
+    color: #c33;
+    margin-left: 5px;
+    padding-left: 3px;
+    padding-right: 3px;
+    margin-right: -6px;
+}
+
+span.textclose:hover {
+    color: #c33;
+}
+
+div.svg {
+    width: 100%;
+    overflow: auto;
+    text-align: center;
+}
+
+.banner, .invisbanner {
+    margin: 0;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 11px;
+    padding-right: 11px;
+    text-align: left;
+    font-size: 12px;
+    border: 0;
+    border-bottom-right-radius: 7px;
+    border-bottom-left-radius: 7px;
+}
+
+.invisbanner { color: #fff; }
+
+.banner {
+    position: relative;
+    top: -1px;
+    font-weight: bold;
+    /* background: #444;
+    color: #fff; */
+}
+
+div.block {
+    position: relative;
+}
+
+div.texttitle {
+    /* position: fixed; */
+    display: none;
+    /* top: 0; */
+    width: 610px;
+    margin: auto;
+    /* right: 0; */
+    z-index: 1;
+}
+
+div.text {
+    display: none;
+    margin: auto;
+    /* position: fixed; 
+    top: 0;
+    right: 0; */
+    width: 610px;
+    /* bottom: 0; */
+    /* padding: 5px; */
+    /* background: #f7f7f7; */
+	/* border-left: 1px dashed #ccc; */
+    overflow: auto;
+}
+
+div.code {
+    font-family: "Consolas", monospace;
+    font-size: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 15px;
+	padding-bottom: 20px;
+}
+
+svg { padding: 5px; }
+
+.lab {
+    text-anchor: middle;
+    font-family: "Consolas", monospace;
+    font-size: 11px;
+}
+
+polygon.box { fill: #ddd; }
+polygon.in { fill: #aaf; }
+polygon.out { fill: #9c9; }
+polygon.in2 { fill: #ddf; }
+polygon.out2 { fill: #ded; }
+polygon.focus { fill: #fcc; }
+
+path { fill: none; stroke-width: 0; stroke-linejoin: round; }
+path.bg, path.in, path.out, path.out2, path.in2 {
+    stroke-width: 1;
+}
+path.bg { stroke: #eee; }
+path.in { stroke: #55f; }
+path.out { stroke: #3c3; }
+path.in2 { stroke: #bbf; }
+path.out2 { stroke: #bdb; }
+
+text.focus { font-weight: bold; }
+
+span.cm { color: #888; }
+span.ident { color: #333; }
+span.bfunc { color: #933; }
+span.btype { color: #060; }
+span.num { color: #930; }
+span.str { color: #609; }
+span.op { color: #666; }
+span.kw { color: #960; }
+span.na { color: #f00; }
