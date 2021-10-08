@@ -1,1 +1,1 @@
-scp photo.jpeg index.html login.eng.ucsd.edu:public_html/.
+scp photo.jpeg index.html paper-*.pdf login.eng.ucsd.edu:public_html/.
