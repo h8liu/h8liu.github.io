@@ -1,0 +1,16 @@
+{
+  "ignition": {
+    "version": "3.3.0"
+  },
+  "passwd": {
+    "users": [
+      {
+        "name": "core",
+        "sshAuthorizedKeys": [
+          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDDpTKdb5ZLsCau70Shxa1s4k7eG3sff6f9HIH3PxDSj8wq9xkN0IAqe2+qS/+LUqsxutSMr3ghyFDaySlRVvoU1j9SUzZWfWxFHb3fkDCGYpkgaiERvNhb7g01bQbW7XqfmyvFN87WcmUeGhus9soyRPnVio1qfkxms97xiXtK8+NvGPPCU008dJ0EBL659nLk3HukTYmsL1iyUFarjdkhsFKirmFjhUMU49vvsIqD5PWdcft3POE60y0G86Yay033MKril22veKZnZyzXlgoatX42acB6asXvBdeBquZF4JIXUw15/cN1TtI90DlGi0gBNd2k8neCasp4omSyE2+aRVF95iVnkBBPc8NB0/WtEwwXr4UpYbU5BTkVPoCOsp+jVs4MJIg29IJXeR4/gfK3VEoIKKdaj6Uo8sUw9DjYR4NCr5kK3rOzhm1vQiMJLOpl3F+Cz37S6SsbIjW9850UL5RNLmhqjQTHQKm9qOQkpT8/m1f8o/8goJYG49KqB4HRuXr9VCU02Ewy19Ooj4k2BebFCnJykQKohSLzu/+mriU98YMYeLF0O25UgzTSZ1SQuwgx2vp0vQvYhzS6Vhi+itLEPpHbFSBG4DzykxtlvGmevp9VZUh3xndRvQ7yPit9KA4uj/SlJ1/HrTAYeMY6J7Y3fQktji9e7la/UmKsdQ==",
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKBlRb036JMEcFUYRGnC3Ea7SFJQuPRZ1emxNwRA7AgP"
+        ]
+      }
+    ]
+  }
+}
